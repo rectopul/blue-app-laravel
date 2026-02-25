@@ -19,7 +19,7 @@ class AuthController extends Controller
         if (Auth::check()) {
             return redirect()->route('dashboard');
         }
-        return view('app.auth.login');
+        return view('blue-app.auth.login');
     }
 
     /**
@@ -27,6 +27,10 @@ class AuthController extends Controller
      */
     public function store(Request $request)
     {
+        // Remove mask from auth (phone)
+        if ($request->has('auth')) {
+            $request->merge(['auth' => preg_replace('/\D/', '', $request->auth)]);
+        }
 
         if ($request->auth == '' || $request->auth == null || $request->password == '') {
             return redirect()->back()->with('error', 'Telefone ou senha incorretos');

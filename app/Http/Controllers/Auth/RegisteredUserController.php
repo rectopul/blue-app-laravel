@@ -33,7 +33,7 @@ class RegisteredUserController extends Controller
     {
         $captcha_code = rand(00000, 99999);
         $ref_by = $request->query('inviteCode');
-        return view('app.auth.registration', compact('ref_by', 'captcha_code'));
+        return view('blue-app.auth.register', compact('ref_by', 'captcha_code'));
     }
 
     /**
@@ -43,16 +43,24 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request)
     {
+        // Remove mask from phone
+        if ($request->has('phone')) {
+            $request->merge(['phone' => preg_replace('/\D/', '', $request->phone)]);
+        }
+
         $validate = Validator::make($request->all(), [
-            'phone' => ['required', 'numeric', 'unique:users,phone'],
-            'password' => ['required'],
+            'phone' => ['required', 'numeric', 'unique:users,phone', 'digits_between:10,11'],
+            'password' => ['required', 'min:6'],
+        ], [
+            'phone.required' => 'O telefone é obrigatório.',
+            'phone.unique' => 'Este número de telefone já está cadastrado.',
+            'phone.digits_between' => 'O telefone deve ter entre 10 e 11 dígitos.',
+            'password.required' => 'A senha é obrigatória.',
+            'password.min' => 'A senha deve ter pelo menos 6 caracteres.',
         ]);
+
         if ($validate->fails()) {
-            $user = User::where('phone', $request->phone)->orWhere('email', $request->email)->first();
-            if ($user) {
-                return back()->with('message', 'Phone number or email address exist');
-            }
-            return back()->with('message', $validate->errors());
+            return back()->with('message', $validate->errors()->all())->withInput();
         }
 
 
