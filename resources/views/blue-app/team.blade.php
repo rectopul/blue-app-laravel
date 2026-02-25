@@ -1,7 +1,7 @@
 @extends('layouts.blueapp')
 
 @section('content')
-    <div x-data="{ level: 1 }" class="pb-32">
+    <div x-data="teamApp()" class="pb-32">
         {{-- Header --}}
         <div class="relative overflow-hidden rounded-b-[34px] bg-gradient-to-b from-[#CFE7FF] to-[#EEF4F9] px-5 pt-8 pb-10">
             <div class="flex items-center justify-between">
@@ -101,13 +101,13 @@
                 <h3 class="text-lg font-bold mb-4">Convide Amigos</h3>
                 <p class="text-xs text-white/60 mb-6 leading-relaxed">Ganhe comissões em 3 níveis sobre todos os investimentos da sua rede.</p>
 
-                <div class="flex items-center gap-3 bg-white/10 p-4 rounded-2xl border border-white/10 mb-4">
+                <div class="flex items-center gap-3 bg-white/10 p-4 rounded-2xl border border-white/10 mb-4 group active:scale-[0.98] transition-all" @click="copyLink()">
                     <div class="flex-1 overflow-hidden">
                         <p class="text-[10px] text-white/40 uppercase font-bold mb-1">Seu Link de Convite</p>
                         <p class="text-xs font-mono truncate">{{ refferUrl($user) }}</p>
                     </div>
-                    <button onclick="copyToClipboard('{{ refferUrl($user) }}')" class="bg-white text-slate-900 px-4 py-2 rounded-xl text-[10px] font-bold active:scale-95 transition-all">
-                        COPIAR
+                    <button class="bg-white text-slate-900 px-4 py-2 rounded-xl text-[10px] font-bold transition-all" :class="copied ? 'bg-emerald-500 text-white' : ''">
+                        <span x-text="copied ? 'COPIADO!' : 'COPIAR'"></span>
                     </button>
                 </div>
             </div>
@@ -120,10 +120,18 @@
 
     @push('scripts')
     <script>
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Copiado com sucesso!');
-            });
+        function teamApp() {
+            return {
+                level: 1,
+                copied: false,
+                copyLink() {
+                    const text = '{{ refferUrl($user) }}';
+                    navigator.clipboard.writeText(text).then(() => {
+                        this.copied = true;
+                        setTimeout(() => this.copied = false, 2000);
+                    });
+                }
+            }
         }
     </script>
     @endpush

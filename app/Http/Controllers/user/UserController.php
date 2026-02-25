@@ -741,11 +741,63 @@ class UserController extends Controller
     public function historyTransactions($condition = null)
     {
         $user = auth()->user();
-        $deposits = $user->deposits()->orderBy('id', 'desc')->get();
-        $withdrawals = $user->withdrawals()->orderBy('id', 'desc')->get();
-        $commissions = $user->commissions()->orderBy('id', 'desc')->get();
-        $ledgers = $user->ledgers()->orderBy('id', 'desc')->get();
-        return view('dmk.transactions', compact('condition', 'deposits', 'withdrawals', 'commissions', 'ledgers'));
+        $ledgers = $user->ledgers()->orderBy('id', 'desc')->paginate(20);
+        return view('blue-app.transactions', compact('ledgers'));
+    }
+
+    public function updatePixAccount(Request $request)
+    {
+        $user = auth()->user();
+        $validator = Validator::make($request->all(), [
+            'realname' => 'required|string|min:3',
+            'pix_type' => 'required|in:CPF,EMAIL,PHONE',
+            'pix_key' => 'required',
+        ]);
+
+        $validator->after(function ($validator) use ($request) {
+            $type = $request->pix_type;
+            $key = $request->pix_key;
+
+            if ($type === 'CPF') {
+                $digits = preg_replace('/\D/', '', $key);
+                if (strlen($digits) !== 11) {
+                    $validator->errors()->add('pix_key', 'O CPF deve conter 11 números.');
+                }
+            } elseif ($type === 'EMAIL') {
+                if (!filter_var($key, FILTER_VALIDATE_EMAIL)) {
+                    $validator->errors()->add('pix_key', 'Informe um e-mail válido.');
+                }
+            } elseif ($type === 'PHONE') {
+                $digits = preg_replace('/\D/', '', $key);
+                if (strlen($digits) < 10) {
+                    $validator->errors()->add('pix_key', 'Informe um telefone válido com DDD.');
+                }
+            }
+        });
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $validator->errors()->first(),
+            ], 422);
+        }
+
+        $user->realname = $request->realname;
+        $user->pix_type = $request->pix_type;
+        $user->pix_key = $request->pix_key;
+
+        // Se for CPF, também atualizamos o gateway_number que é usado em alguns lugares do sistema
+        if ($request->pix_type === 'CPF') {
+            $user->gateway_number = preg_replace('/\D/', '', $request->pix_key);
+        }
+
+        $user->gateway_method = 'PIX';
+        $user->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Sua conta de saque PIX foi atualizada!'
+        ]);
     }
 
     public function history($condition = null)
@@ -948,7 +1000,22 @@ class UserController extends Controller
         $first_level_users = $referralCounts['level_1'];
         $third_level_users = $referralCounts['level_3'];
         $second_level_users = $referralCounts['level_2'];
-        return view('app.main.profile', compact('user', 'team_size', 'first_level_users', 'third_level_users', 'second_level_users'));
+
+        // Stats para o novo perfil
+        $totalDeposited = $user->deposits()->where('status', 'approved')->sum('amount');
+        $totalWithdrawn = $user->withdrawals()->where('status', 'approved')->sum('amount');
+        $todayEarnings = $user->ledgers()->whereDate('created_at', Carbon::today())->where('credit', '>', 0)->sum('credit');
+
+        return view('blue-app.profile', compact(
+            'user',
+            'team_size',
+            'first_level_users',
+            'third_level_users',
+            'second_level_users',
+            'totalDeposited',
+            'totalWithdrawn',
+            'todayEarnings'
+        ));
     }
 
     public function team()

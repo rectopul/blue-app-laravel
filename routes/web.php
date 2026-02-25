@@ -218,6 +218,7 @@ Route::middleware(['throttle:60,1'])->group(function () {
         Route::get('add-bank', [UserController::class, 'add_bank'])->name('user.bank');
         Route::get('add-bank-create', [UserController::class, 'add_bank_create'])->name('user.bank.create');
         Route::post('/setup/gateway', [UserController::class, 'setupGateway'])->name('setup.gateway.submit');
+        Route::post('update-pix-account', [UserController::class, 'updatePixAccount'])->name('user.update.pix');
 
         //deposit
         Route::get('/deposit', [UserController::class, 'recharge'])->name('user.deposit');
