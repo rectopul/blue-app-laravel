@@ -5,7 +5,8 @@
         {{-- Header --}}
         <div class="relative overflow-hidden rounded-b-[34px] bg-gradient-to-b from-[#CFE7FF] to-[#EEF4F9] px-5 pt-8 pb-10">
             <div class="flex items-center justify-between">
-                <a href="{{ route('dashboard') }}" class="grid h-11 w-11 place-items-center rounded-2xl bg-white shadow-sm ring-1 ring-black/5 active:scale-90 transition-all">
+                <a href="{{ route('dashboard') }}"
+                    class="grid h-11 w-11 place-items-center rounded-2xl bg-white shadow-sm ring-1 ring-black/5 active:scale-90 transition-all">
                     <span class="material-symbols-outlined text-slate-600">arrow_back</span>
                 </a>
                 <h1 class="text-lg font-bold text-slate-900 uppercase tracking-widest">Minha Equipe</h1>
@@ -19,7 +20,9 @@
                 </div>
                 <div class="bg-white/60 backdrop-blur-sm p-4 rounded-3xl border border-white/40">
                     <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Comissões</p>
-                    <p class="text-xl font-black text-[#2C95EF]">R$ {{ number_format($levelTotalCommission1 + $levelTotalCommission2 + $levelTotalCommission3, 2, ',', '.') }}</p>
+                    <p class="text-xl font-black text-[#2C95EF]">R$
+                        {{ number_format($levelTotalCommission1 + $levelTotalCommission2 + $levelTotalCommission3, 2, ',', '.') }}
+                    </p>
                 </div>
             </div>
 
@@ -43,15 +46,18 @@
         </div>
 
         {{-- Level Tabs --}}
-        <div class="px-5 -mt-6">
+        <div class="px-5 mt-6">
             <div class="bg-white rounded-[28px] p-2 shadow-lg shadow-slate-200/50 flex gap-1">
-                <button @click="level = 1" :class="level === 1 ? 'bg-[#2C95EF] text-white shadow-md' : 'text-slate-400'" class="flex-1 py-3 text-xs font-bold rounded-[22px] transition-all smooth-transition">
+                <button @click="level = 1" :class="level === 1 ? 'bg-[#2C95EF] text-white shadow-md' : 'text-slate-400'"
+                    class="flex-1 py-3 text-xs font-bold rounded-[22px] transition-all smooth-transition">
                     Nível 1 ({{ $first_level_users->count() }})
                 </button>
-                <button @click="level = 2" :class="level === 2 ? 'bg-[#2C95EF] text-white shadow-md' : 'text-slate-400'" class="flex-1 py-3 text-xs font-bold rounded-[22px] transition-all smooth-transition">
+                <button @click="level = 2" :class="level === 2 ? 'bg-[#2C95EF] text-white shadow-md' : 'text-slate-400'"
+                    class="flex-1 py-3 text-xs font-bold rounded-[22px] transition-all smooth-transition">
                     Nível 2 ({{ $second_level_users->count() }})
                 </button>
-                <button @click="level = 3" :class="level === 3 ? 'bg-[#2C95EF] text-white shadow-md' : 'text-slate-400'" class="flex-1 py-3 text-xs font-bold rounded-[22px] transition-all smooth-transition">
+                <button @click="level = 3" :class="level === 3 ? 'bg-[#2C95EF] text-white shadow-md' : 'text-slate-400'"
+                    class="flex-1 py-3 text-xs font-bold rounded-[22px] transition-all smooth-transition">
                     Nível 3 ({{ $third_level_users->count() }})
                 </button>
             </div>
@@ -95,18 +101,22 @@
 
         {{-- Share Section --}}
         <div class="px-5 mt-10">
-            <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-[32px] p-6 text-white relative overflow-hidden">
+            <div
+                class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-[32px] p-6 text-white relative overflow-hidden">
                 <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-blue-500/10 rounded-full"></div>
 
                 <h3 class="text-lg font-bold mb-4">Convide Amigos</h3>
-                <p class="text-xs text-white/60 mb-6 leading-relaxed">Ganhe comissões em 3 níveis sobre todos os investimentos da sua rede.</p>
+                <p class="text-xs text-white/60 mb-6 leading-relaxed">Ganhe comissões em 3 níveis sobre todos os
+                    investimentos da sua rede.</p>
 
-                <div class="flex items-center gap-3 bg-white/10 p-4 rounded-2xl border border-white/10 mb-4 group active:scale-[0.98] transition-all" @click="copyLink()">
+                <div class="flex items-center gap-3 bg-white/10 p-4 rounded-2xl border border-white/10 mb-4 group active:scale-[0.98] transition-all"
+                    @click="copyLink()">
                     <div class="flex-1 overflow-hidden">
                         <p class="text-[10px] text-white/40 uppercase font-bold mb-1">Seu Link de Convite</p>
                         <p class="text-xs font-mono truncate">{{ refferUrl($user) }}</p>
                     </div>
-                    <button class="bg-white text-slate-900 px-4 py-2 rounded-xl text-[10px] font-bold transition-all" :class="copied ? 'bg-emerald-500 text-white' : ''">
+                    <button class="bg-white text-slate-900 px-4 py-2 rounded-xl text-[10px] font-bold transition-all z-10"
+                        :class="copied ? 'bg-emerald-500 text-white' : ''">
                         <span x-text="copied ? 'COPIADO!' : 'COPIAR'"></span>
                     </button>
                 </div>
@@ -115,24 +125,25 @@
     </div>
 
     @push('styles')
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     @endpush
 
     @push('scripts')
-    <script>
-        function teamApp() {
-            return {
-                level: 1,
-                copied: false,
-                copyLink() {
-                    const text = '{{ refferUrl($user) }}';
-                    navigator.clipboard.writeText(text).then(() => {
-                        this.copied = true;
-                        setTimeout(() => this.copied = false, 2000);
-                    });
+        <script>
+            function teamApp() {
+                return {
+                    level: 1,
+                    copied: false,
+                    copyLink() {
+                        const text = '{{ refferUrl($user) }}';
+                        navigator.clipboard.writeText(text).then(() => {
+                            this.copied = true;
+                            setTimeout(() => this.copied = false, 2000);
+                        });
+                    }
                 }
             }
-        }
-    </script>
+        </script>
     @endpush
 @endsection
