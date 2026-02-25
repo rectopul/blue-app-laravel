@@ -246,8 +246,13 @@ class User extends Authenticatable
 
         // Itera sobre os níveis de indicação, até 3 níveis ou até que não haja mais um referrer.
         while ($referrer && $currentLevel <= 3) {
-            // Constrói o nome da coluna dinamicamente, ex: 'interest_commission1'
-            $commissionKey = 'interest_commission' . $currentLevel;
+            // Constrói o nome da coluna dinamicamente
+            $commissionKey = match ($currentLevel) {
+                1 => 'first_level_percentage',
+                2 => 'second_level_percentage',
+                3 => 'third_level_percentage',
+                default => null,
+            };
             $commissionRate = $rebateRates->{$commissionKey} ?? 0;
 
             if ($commissionRate > 0) {

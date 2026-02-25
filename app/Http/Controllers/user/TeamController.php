@@ -85,7 +85,7 @@ class TeamController extends Controller
         $levelTotalCommission2 = UserLedger::where('user_id', \auth()->id())->where('reason', 'LIKE', '%referral_commission%')->where('step', 'second')->sum('amount');
         $levelTotalCommission3 = UserLedger::where('user_id', \auth()->id())->where('reason', 'LIKE', '%referral_commission%')->where('step', 'third')->sum('amount');
 
-        return view('app.main.team.index', compact(
+        return view('blue-app.team', compact(
             'user',
             'first_level_users',
             'second_level_users',

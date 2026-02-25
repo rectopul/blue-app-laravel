@@ -113,11 +113,40 @@ class UserController extends Controller
         $token = auth()->user()->createToken('api-token')->plainTextToken;
         $vipSlides = VipSlider::all();
         $setting = Setting::first();
-        $checkinValue = $setting->checkin;
+        $checkinValue = $setting->checkin ?? 0;
         $user = auth()->user();
         $weeklyEarnings = $this->getWeeklyEarnings($user->id);
         $userCheckin = $this->canUserCheckin($user);
-        return view('blue-app.dashboard', compact('packages', 'featuredPackages', 'checkinValue', 'token', 'vipSlides', 'user', 'weeklyEarnings', 'userCheckin'));
+
+        // Dados reais para o dashboard blue-app
+        $walletBalance = $user->balance;
+
+        $dailyEarningsToday = UserLedger::where('user_id', $user->id)
+            ->whereDate('created_at', Carbon::today())
+            ->whereIn('reason', ['income', 'interest', 'profit', 'dividend', 'commission', 'commission_indication'])
+            ->sum('credit');
+
+        $dailyRate = $setting->avg_daily_rate ?? 1.2;
+
+        $investments = Purchase::where('user_id', $user->id)
+            ->with('package')
+            ->orderByDesc('id')
+            ->get();
+
+        return view('blue-app.dashboard', compact(
+            'packages',
+            'featuredPackages',
+            'checkinValue',
+            'token',
+            'vipSlides',
+            'user',
+            'weeklyEarnings',
+            'userCheckin',
+            'walletBalance',
+            'dailyEarningsToday',
+            'dailyRate',
+            'investments'
+        ));
     }
 
 
@@ -938,7 +967,7 @@ class UserController extends Controller
         $token = auth()->user()->createToken('deposit-token')->plainTextToken;
         $balance = auth()->user()->balance;
         $minDeposit = Setting::first()->min_deposit;
-        return view('dmk.deposit', compact('token', 'balance', 'minDeposit'));
+        return view('blue-app.deposit', compact('token', 'balance', 'minDeposit'));
     }
 
     public function recharge_amount($amount)
