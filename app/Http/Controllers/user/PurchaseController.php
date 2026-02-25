@@ -147,19 +147,19 @@ class PurchaseController extends Controller
         // First level referral
         $firstRef = User::where('ref_id', $user->ref_by)->first();
         if ($firstRef) {
-            $amount = $package->price * $rebate->interest_commission1 / 100;
+            $amount = $package->price * $rebate->first_level_percentage / 100;
             $this->creditCommission($firstRef, $user, $amount, 'First Level Commission Received', 'first');
 
             // Second level referral
             $secondRef = User::where('ref_id', $firstRef->ref_by)->first();
             if ($secondRef) {
-                $amount = $package->price * $rebate->interest_commission2 / 100;
+                $amount = $package->price * $rebate->second_level_percentage / 100;
                 $this->creditCommission($secondRef, $user, $amount, 'Second Level Commission Received', 'second');
 
                 // Third level referral
                 $thirdRef = User::where('ref_id', $secondRef->ref_by)->first();
                 if ($thirdRef) {
-                    $amount = $package->price * $rebate->interest_commission3 / 100;
+                    $amount = $package->price * $rebate->third_level_percentage / 100;
                     $this->creditCommission($thirdRef, $user, $amount, 'Third Level Commission Received', 'third');
                 }
             }
@@ -288,7 +288,7 @@ class PurchaseController extends Controller
 
                 $first_ref = User::where('ref_id', Auth::user()->ref_by)->first();
                 if ($first_ref) {
-                    $amount = $package->price * $rebate->interest_commission1 / 100;
+                    $amount = $package->price * $rebate->first_level_percentage / 100;
 
                     User::where('id', $first_ref->id)->update([
                         'balance' => $first_ref->balance + $amount
@@ -308,7 +308,7 @@ class PurchaseController extends Controller
 
                     $second_ref = User::where('ref_id', $first_ref->ref_by)->first();
                     if ($second_ref) {
-                        $amount = $package->price * $rebate->interest_commission2 / 100;
+                        $amount = $package->price * $rebate->second_level_percentage / 100;
                         User::where('id', $second_ref->id)->update([
                             'balance' => $second_ref->balance + $amount
                         ]);
@@ -327,7 +327,7 @@ class PurchaseController extends Controller
 
                         $third_ref = User::where('ref_id', $second_ref->ref_by)->first();
                         if ($third_ref) {
-                            $amount = $package->price * $rebate->interest_commission3 / 100;
+                            $amount = $package->price * $rebate->third_level_percentage / 100;
                             User::where('id', $third_ref->id)->update([
                                 'balance' => $third_ref->balance + $amount
                             ]);
