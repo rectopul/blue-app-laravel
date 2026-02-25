@@ -47,6 +47,6 @@ Route::middleware(['throttle:60,1'])->group(function () {
 });
 
 Route::post('/webhook/pixup/confirm_deposits', [WebhooksController::class, 'pixupWebhookDeposit'])->name('pixup.webhook');
-Route::post('/webhook/pixup/confirm_deposits', [WebhooksController::class, 'pixupWebhookDeposit'])->name('valorion.webhook');
+Route::post('/webhook/valorion/confirm_deposits', [WebhooksController::class, 'pixupWebhookDeposit'])->name('valorion.webhook');
 Route::post('/webhook/vizionpay/{type}', [WebhooksController::class, 'posseidonPayWebhook'])->name('posseidonpay.webhook');
 Route::get('/user/network/{user}', [UserController::class, 'processIndividualComissions'])->name('user.process.individual.comissions');
