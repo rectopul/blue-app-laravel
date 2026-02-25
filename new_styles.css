@@ -1,0 +1,39 @@
+html body ul.list li .info div > button[data-v-840f729e] {
+    background: #ff7600 !important;
+}
+
+ul.list li:nth-child(2) .title.truncate {
+    position: relative;
+}
+
+ul.list li:nth-child(2) div.v {
+    font-size: 0;
+}
+
+ul.list li:nth-child(2) div.v::before {
+    content: "🔥Mais vendido";
+    background: #fff;
+    font-size: 11px;
+    color: #ff7600;
+    padding: 3px 10px;
+    border-radius: 5px;
+}
+
+ul.list li:nth-child(2) div.v img {
+    display: none;
+}
+
+ul.list li:nth-child(2) .title.truncate::before {
+    position: absolute;
+    top: 50%;
+    margin-top: -10px;
+    right: 5px;
+    content: "";
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' version='1.1' xmlns:xlink='http://www.w3.org/1999/xlink' width='512' height='512' x='0' y='0' viewBox='0 0 512 512' style='enable-background:new 0 0 512 512' xml:space='preserve' class=''%3E%3Cg%3E%3Cpath fill='%23ff641a' d='m247.5 512-65.348-54.922-87.613 9.45-18.102-86.235L0 336.422 36.063 256 0 175.578l76.438-43.871 18.101-86.234 87.613 9.449L247.5 0l65.348 54.922 87.613-9.45 18.102 86.235L495 175.578 458.938 256 495 336.422l-76.437 43.871-18.102 86.234-87.613-9.449zm0 0' opacity='1' data-original='%23ff641a' class=''%3E%3C/path%3E%3Cpath fill='%23f03800' d='m312.848 457.078 87.613 9.45 18.101-86.235L495 336.422 458.937 256 495 175.578l-76.438-43.871-18.101-86.234-87.613 9.449L247.5 0v512zm0 0' opacity='1' data-original='%23f03800' class=''%3E%3C/path%3E%3Cpath fill='%23fff7cc' d='M157.5 241h-30v-45h-30v120h30v-45h30v45h30V196h-30zm0 0' opacity='1' data-original='%23fff7cc' class=''%3E%3C/path%3E%3Cpath fill='%23ffe6b3' d='M397.5 196h-90v30h30v90h30v-90h30zm0 0' opacity='1' data-original='%23ffe6b3' class=''%3E%3C/path%3E%3Cpath fill='%23fff7cc' d='M247.5 196c-24.813 0-45 20.188-45 45v30c0 24.813 20.188 45 45 45s45-20.188 45-45v-30c0-24.813-20.188-45-45-45zm15 75c0 8.277-6.723 15-15 15s-15-6.723-15-15v-30c0-8.277 6.723-15 15-15s15 6.723 15 15zm0 0' opacity='1' data-original='%23fff7cc' class=''%3E%3C/path%3E%3Cpath fill='%23ffe6b3' d='M262.5 241v30c0 8.277-6.723 15-15 15v30c24.813 0 45-20.188 45-45v-30c0-24.813-20.188-45-45-45v30c8.277 0 15 6.723 15 15zm0 0' opacity='1' data-original='%23ffe6b3' class=''%3E%3C/path%3E%3C/g%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    width: 20px;
+    height: 20px;
+    z-index: 10;
+}

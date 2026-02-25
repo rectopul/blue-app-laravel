@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nota Fiscal - Pousada Bom Sossego</title>
+
+    <style>
+        :root {
+            --primary: #0f766e;
+            --primary-dark: #0b4f4a;
+            --gold: #f59e0b;
+            --text: #0f172a;
+            --muted: #475569;
+            --border: #e2e8f0;
+            --bg: #f8fafc;
+            --white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 24px;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+        }
+
+        .header {
+            padding: 22px 24px;
+            background: linear-gradient(135deg,
+                    var(--primary),
+                    var(--primary-dark));
+            color: #fff;
+            position: relative;
+        }
+
+        .header .top {
+            display: flex;
+            justify-content: space-between;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .brand {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 22px;
+            letter-spacing: 0.3px;
+        }
+
+        .brand p {
+            margin: 0;
+            font-size: 13px;
+            opacity: 0.95;
+        }
+
+        .doc {
+            text-align: right;
+            min-width: 220px;
+        }
+
+        .doc h2 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .doc .nf-number {
+            margin-top: 6px;
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.14);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .gold-line {
+            height: 6px;
+            background: linear-gradient(90deg, var(--gold), #ffd28a);
+        }
+
+        .content {
+            padding: 24px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .box {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px;
+            background: #fff;
+        }
+
+        .box h3 {
+            margin: 0 0 10px;
+            font-size: 13px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 7px 0;
+            border-bottom: 1px dashed #e5e7eb;
+            font-size: 14px;
+        }
+
+        .row:last-child {
+            border-bottom: none;
+        }
+
+        .label {
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        .value {
+            font-weight: 700;
+            color: var(--text);
+            text-align: right;
+        }
+
+        .table {
+            margin-top: 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        thead {
+            background: #f1f5f9;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+        }
+
+        th {
+            font-size: 13px;
+            color: #1f2937;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        td {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .total-area {
+            margin-top: 16px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .total-box {
+            width: 340px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            background: #fff;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 15px;
+        }
+
+        .total-row strong {
+            font-size: 16px;
+        }
+
+        .highlight {
+            background: linear-gradient(90deg,
+                    rgba(245, 158, 11, 0.15),
+                    rgba(245, 158, 11, 0.05));
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin-top: 10px;
+            font-size: 13px;
+            color: #7c2d12;
+            font-weight: 700;
+        }
+
+        .footer {
+            padding: 18px 24px;
+            background: #f8fafc;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .signature {
+            margin-top: 18px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .sign-box {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px;
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            background: #fff;
+        }
+
+        .sign-line {
+            border-top: 1px solid #94a3b8;
+            padding-top: 8px;
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 700;
+            text-align: center;
+        }
+
+        /* Print */
+        @media print {
+            body {
+                background: #fff;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+
+            .highlight {
+                border-color: #999;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="top">
+                <div class="brand">
+                    <h1>Pousada Bom Sossego</h1>
+                    <p><strong>CNPJ:</strong> 26.423.579/0001-99</p>
+                    <p><strong>Contato:</strong> (91) 98453 - 6615</p>
+                </div>
+
+                <div class="doc">
+                    <h2>RECIBO / NOTA DE ESTADIA</h2>
+                    <div class="nf-number">Data: 25/01/2026</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="gold-line"></div>
+
+        <div class="content">
+            <div class="grid">
+                <div class="box">
+                    <h3>Dados do Cliente</h3>
+
+                    <div class="row">
+                        <span class="label">Cliente:</span>
+                        <span class="value">Jao Roberto Barbosa</span>
+                    </div>
+
+                    <div class="row">
+                        <span class="label">Serviço:</span>
+                        <span class="value">Estadia</span>
+                    </div>
+
+                    <div class="row">
+                        <span class="label">Veículo (Placa):</span>
+                        <span class="value">KZW80I02</span>
+                    </div>
+                </div>
+
+                <div class="box">
+                    <h3>Dados da Pousada</h3>
+
+                    <div class="row">
+                        <span class="label">Razão Social:</span>
+                        <span class="value">Pousada Bom Sossego</span>
+                    </div>
+
+                    <div class="row">
+                        <span class="label">CNPJ:</span>
+                        <span class="value">26.423.579/0001-99</span>
+                    </div>
+
+                    <div class="row">
+                        <span class="label">Telefone:</span>
+                        <span class="value">(91) 98453 - 6615</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Descrição</th>
+                            <th style="width: 140px">Qtd.</th>
+                            <th style="width: 160px">Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Estadia - Pousada Bom Sossego</td>
+                            <td>01</td>
+                            <td>R$ 220,00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="total-area">
+                <div class="total-box">
+                    <div class="total-row">
+                        <span class="label">Subtotal</span>
+                        <span class="value">R$ 220,00</span>
+                    </div>
+                    <div class="total-row">
+                        <span class="label">Descontos</span>
+                        <span class="value">R$ 0,00</span>
+                    </div>
+                    <div class="total-row">
+                        <strong>Total</strong>
+                        <strong>R$ 220,00</strong>
+                    </div>
+
+                    <div class="highlight">
+                        Documento emitido como comprovante de prestação de
+                        serviço (estadia).
+                    </div>
+                </div>
+            </div>
+
+            <div class="signature">
+                <div class="sign-box">
+                    <div class="sign-line">
+                        Assinatura do Responsável (Pousada)
+                    </div>
+                </div>
+                <div class="sign-box">
+                    <div class="sign-line">Assinatura do Cliente</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div>
+                <strong>Pousada Bom Sossego</strong> • Documento gerado em
+                24/01/2026
+            </div>
+            <div>Contato: (91) 98453 - 6615 • CNPJ: 26.423.579/0001-99</div>
+        </div>
+    </div>
+</body>
+
+</html>
