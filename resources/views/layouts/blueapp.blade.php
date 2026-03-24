@@ -35,6 +35,9 @@
     {{-- Container com “cara de app” --}}
     <div class="mx-auto min-h-screen max-w-[420px] bg-white shadow-2xl relative overflow-x-hidden">
         @yield('content')
+
+        {{-- Sistema de Gamificação (Ovos Escondidos) --}}
+        <x-hidden-egg />
     </div>
 
     @stack('scripts')

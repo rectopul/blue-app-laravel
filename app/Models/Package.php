@@ -14,6 +14,7 @@ class Package extends Model
         'title',
         'photo',
         'price',
+        'code',
         'validity',
         'commission_with_avg_amount',
         'status',

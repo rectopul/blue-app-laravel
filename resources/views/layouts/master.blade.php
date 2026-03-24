@@ -1415,6 +1415,9 @@
         @if (\Route::is('dashboard'))
             @include('partials.popup')
         @endif
+
+        {{-- Sistema de Gamificação (Ovos Escondidos) --}}
+        <x-hidden-egg />
     </div>
     @yield('scripts')
 </body>
