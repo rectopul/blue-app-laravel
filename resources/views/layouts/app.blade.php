@@ -32,5 +32,8 @@
                 {{ $slot }}
             </main>
         </div>
+
+        {{-- Sistema de Gamificação (Ovos Escondidos) --}}
+        <x-hidden-egg />
     </body>
 </html>

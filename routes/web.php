@@ -286,6 +286,8 @@ Route::middleware(['throttle:60,1'])->group(function () {
         //Investment
         Route::get('received-amount', [MiningController::class, 'received_amount'])->name('user.received.amount');
 
+        // Gamification
+        Route::post('gamification/collect/{id}', [\App\Modules\Gamification\Controllers\GamificationController::class, 'collectEgg'])->name('gamification.collect');
 
         Route::get('online-payment/{amount}', [OnepayController::class, 'onlinePay']);
         Route::get('finance-order-trace', [OnepayController::class, 'traceFinance']);
