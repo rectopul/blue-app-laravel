@@ -13,7 +13,11 @@ class Setting extends Model
         'token_expire_at',
         'token_created_at',
         'gateway_token',
-        'min_deposit'
+        'min_deposit',
+        'active_gateway',
+        'bitflow_client_id',
+        'bitflow_client_secret',
+        'bitflow_public_key'
     ];
 
     protected $casts = [
