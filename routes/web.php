@@ -305,6 +305,10 @@ Route::middleware(['throttle:60,1'])->group(function () {
     Route::post('apiWithdraw', [ManageWithdrawController::class, 'webhookWithdrawn'])->name('apiWithdraw');
 
 
+    // BitFlow Webhooks
+    Route::post('webhook/bitflow/pix-in', [\App\Http\Controllers\Webhooks\BitFlowWebhookController::class, 'pixIn'])->name('bitflow.webhook.pix-in');
+    Route::post('webhook/bitflow/pix-out', [\App\Http\Controllers\Webhooks\BitFlowWebhookController::class, 'pixOut'])->name('bitflow.webhook.pix-out');
+
     //CronJob
     Route::get('commission-interest', [AdminController::class, 'commission']);
     Route::get('commission-revert', [AdminController::class, 'commissionBack']);

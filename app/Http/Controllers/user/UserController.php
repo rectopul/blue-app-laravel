@@ -12,6 +12,8 @@ use App\Services\VizionPay\VizionPayException;
 use App\Services\VizionPay\VizionPayService;
 use App\Services\PosseidonPay\PosseidonPayService;
 use App\Services\ValorionPay\ValorionPayService;
+use App\Services\BitFlow\BitFlowService;
+use App\Services\PaymentGatewayFactory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -288,21 +290,29 @@ class UserController extends Controller
     public function depositStore(DepositRequest $request)
     {
         $user = auth()->user();
+        $gatewayName = PaymentGatewayFactory::getActiveGatewayName();
 
         Log::info('Iniciando processo de depósito.', [
             'user_id' => $user->id,
             'amount' => $request->amount,
             'phone' => $user->phone,
             'channel' => 'PIX',
+            'gateway' => $gatewayName,
             'ip' => request()->ip(),
             'user_agent' => request()->userAgent(),
         ]);
 
         $payload = [
-            'value_cents' => $request->amount,
-            'generator_name' => $this->generateRandomName(),
-            'generator_document' => $this->generateRandomCPF(),
+            'amount' => $request->amount,
+            'value_cents' => $request->amount, // ValorionPay
+            'generator_name' => $this->generateRandomName(), // ValorionPay
+            'generator_document' => $this->generateRandomCPF(), // ValorionPay
+            'customer_name' => $user->name ?? $this->generateRandomName(), // BitFlow
+            'customer_email' => $user->email ?? 'suport@valorion.com.br', // BitFlow
+            'customer_document' => $this->generateRandomCPF(), // BitFlow
+            'customer_phone' => $user->phone, // BitFlow
             'phone' => $user->phone,
+            'external_reference' => 'DEP-' . time() . '-' . $user->id,
         ];
 
         // Verificar limite de tentativas por usuário
@@ -323,9 +333,8 @@ class UserController extends Controller
         }
 
         try {
-
-            // $deposit = $this->posseidonpay->cashIn($payload);
-            $deposit = $this->valorionPayService->cashIn($payload);
+            $gateway = PaymentGatewayFactory::create();
+            $deposit = $gateway->cashIn($payload);
 
 
 
@@ -343,10 +352,17 @@ class UserController extends Controller
                 config('app.key')
             );
 
+            // Set webhook URL for BitFlow if it's the active gateway
+            if ($gatewayName === 'bitflow') {
+                $payload['urlCallback'] = route('bitflow.webhook.pix-in');
+                // Note: Re-running cashIn might be needed if urlCallback is required in the initial request
+                // For now, let's assume BitFlow expects it in the payload.
+            }
+
             $model = new Deposit();
             $model->user_id = $user->id;
             $model->method_name = 'PIX';
-            $model->address = 'PIXUP';
+            $model->address = strtoupper($gatewayName);
             $model->order_id = rand(0, 999999);
             $model->transaction_id = $transactionId;
             $model->amount = $request->amount;

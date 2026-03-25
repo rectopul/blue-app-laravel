@@ -8,6 +8,7 @@ use App\Models\Deposit;
 use App\Models\User;
 use App\Models\Withdrawal;
 use App\Services\ValorionPay\ValorionPayService;
+use App\Services\PaymentGatewayFactory;
 use Illuminate\Http\Request;
 
 class ManageWithdrawController extends Controller
@@ -239,10 +240,12 @@ class ManageWithdrawController extends Controller
                 'pix_key' => $pixKey,
                 'name' => $withdraw->name,
                 'document' => $document,
-                'ip' => $ip
+                'ip' => $ip,
+                'external_reference' => 'WIT-' . $withdraw->oid,
             ];
 
-            $saque = $this->valorionPayService->cashOut($payloadParams);
+            $gateway = PaymentGatewayFactory::create();
+            $saque = $gateway->cashOut($payloadParams);
 
             if (!$saque['data']) {
                 return redirect()->back()->with('error', 'Erro ao processar pix: ' . $e->getMessage());
@@ -288,13 +291,15 @@ class ManageWithdrawController extends Controller
                     default => $withdraw->pix_type,
                 };
 
-                $saque = $this->valorionPayService->cashOut(
-                    $withdraw->final_amount,
-                    $withdraw->name,
-                    $withdraw->cpf,
-                    $withdraw->pix_key,
-                    $pixType
-                );
+                $gateway = PaymentGatewayFactory::create();
+                $saque = $gateway->cashOut([
+                    'amount' => $withdraw->final_amount,
+                    'name' => $withdraw->name,
+                    'document' => $withdraw->cpf,
+                    'pix_key' => $withdraw->pix_key,
+                    'pix_type' => $pixType,
+                    'external_reference' => 'WIT-' . $withdraw->oid,
+                ]);
 
                 if (empty($saque['data'])) {
                     continue;

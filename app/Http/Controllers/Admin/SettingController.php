@@ -28,6 +28,11 @@ class SettingController extends Controller
         $model->total_member_register_reword_amount = $request->total_member_register_reword_amount;
         $model->total_member_register_reword = $request->total_member_register_reword;
 
+        $model->active_gateway = $request->active_gateway;
+        $model->bitflow_client_id = $request->bitflow_client_id;
+        $model->bitflow_client_secret = $request->bitflow_client_secret;
+        $model->bitflow_public_key = $request->bitflow_public_key;
+
         $model->update();
         return redirect()->route($this->route.'.index')->with('success', 'Settings Updated Successfully.');
     }
