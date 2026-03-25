@@ -253,6 +253,12 @@ Route::middleware(['throttle:60,1'])->group(function () {
         Route::get('/vip/commission', [UserController::class, 'vip_commission'])->name('vip.commission');
         Route::get('/task', [UserController::class, 'task'])->name('task');
         Route::get('/promotion', [UserController::class, 'promotion'])->name('promotion');
+
+        // New Task System
+        Route::get('/tasks', [\App\Http\Controllers\user\TaskController::class, 'index'])->name('user.tasks.index');
+        Route::get('/tasks/{id}', [\App\Http\Controllers\user\TaskController::class, 'show'])->name('user.tasks.show');
+        Route::post('/tasks/complete/{id}', [\App\Http\Controllers\user\TaskController::class, 'complete'])->name('user.tasks.complete');
+
         Route::get('vip/confirm/{id}', [PurchaseController::class, 'purchase_vip'])->name('vip.confirm');
         Route::get('purchase/confirmation/{id}', [PurchaseController::class, 'purchaseConfirmationWeb'])->name('purchase.confirmation');
 

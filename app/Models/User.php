@@ -36,7 +36,8 @@ class User extends Authenticatable
         'register_bonus',
         'withdraw_password',
         'pix_type',
-        'pix_key'
+        'pix_key',
+        'last_task_completed_at'
     ];
 
     /**
@@ -62,7 +63,8 @@ class User extends Authenticatable
         'status' => 'string',
         'email_verified_at' => 'datetime',
         'created_at' => 'datetime',
-        'updated_at' => 'datetime'
+        'updated_at' => 'datetime',
+        'last_task_completed_at' => 'datetime'
     ];
 
     public function deposits()
@@ -199,6 +201,11 @@ class User extends Authenticatable
     public function rewards()
     {
         return $this->hasMany(Reward::class);
+    }
+
+    public function taskCompletions()
+    {
+        return $this->hasMany(UserTaskCompletion::class);
     }
 
     /**

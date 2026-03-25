@@ -51,6 +51,7 @@
 
                     @php
                         $categories = [
+                            ['label' => 'Tarefas', 'icon' => '🎯', 'link' => route('user.tasks.index')],
                             ['label' => 'Depósito', 'icon' => '📈', 'link' => route('user.deposit')],
                             ['label' => 'Saque', 'icon' => '🏦', 'link' => route('user.withdraw')],
                             ['label' => 'Histórico', 'icon' => '🗓️', 'link' => route('history')],
