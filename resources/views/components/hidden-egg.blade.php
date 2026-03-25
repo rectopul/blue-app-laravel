@@ -10,14 +10,24 @@
         class="animate-bounce focus:outline-none"
         title="Clique para coletar seu bônus!"
     >
-        <div class="relative">
-            <!-- Espaço reservado para o SVG do Ovo -->
-            <svg class="w-16 h-16 drop-shadow-xl" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
-                <path d="M50 0C22.3858 0 0 44.7715 0 100C0 111.046 22.3858 120 50 120C77.6142 120 100 111.046 100 100C100 44.7715 77.6142 0 50 0Z" fill="#FBBF24" />
-                <path d="M50 10C30 10 15 45 15 90C15 105 30 110 50 110C70 110 85 105 85 90C85 45 70 10 50 10Z" fill="#F59E0B" fill-opacity="0.3" />
+        <div class="relative group">
+            <div class="absolute inset-0 bg-pink-400 rounded-full blur-xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
+            <!-- Ovo de Páscoa Colorido -->
+            <svg class="w-20 h-24 drop-shadow-2xl relative" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="eggGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#FFD9E5;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#FF80A6;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <path d="M50 0C22.3858 0 0 44.7715 0 100C0 111.046 22.3858 120 50 120C77.6142 120 100 111.046 100 100C100 44.7715 77.6142 0 50 0Z" fill="url(#eggGrad)" />
+                <!-- Detalhes decorativos do ovo -->
+                <path d="M10 80 Q 50 60 90 80" stroke="white" stroke-width="4" fill="none" opacity="0.4" />
+                <path d="M15 95 Q 50 75 85 95" stroke="white" stroke-width="3" fill="none" opacity="0.3" />
+                <circle cx="50" cy="40" r="8" fill="white" opacity="0.2" />
             </svg>
             <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <span class="text-white font-bold text-xs">?</span>
+                <span class="text-white font-black text-lg drop-shadow-md">🎁</span>
             </div>
         </div>
     </button>
