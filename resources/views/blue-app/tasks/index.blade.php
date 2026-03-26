@@ -1,4 +1,4 @@
-﻿@extends('layouts.blueapp')
+@extends('layouts.blueapp')
 
 @section('content')
     <div class="pb-28">

@@ -1,4 +1,4 @@
-﻿@extends('admin.partials.master')
+@extends('admin.partials.master')
 @section('admin_content')
     <section id="dashboard-ecommerce">
         <div class="row">

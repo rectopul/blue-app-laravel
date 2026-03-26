@@ -1,4 +1,4 @@
-﻿@extends('layouts.blueapp')
+@extends('layouts.blueapp')
 
 @section('content')
     <div x-data="withdrawApp()" class="pb-32">
