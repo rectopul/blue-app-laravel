@@ -1,11 +1,11 @@
-@extends('admin.partials.master')
+﻿@extends('admin.partials.master')
 @section('admin_content')
     <section id="dashboard-ecommerce">
         <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">{{ isset($data) ? 'Editar' : 'Nova' }} Tarefa de Vídeo</h4>
+                        <h4 class="card-title">{{ isset($data) ? 'Editar' : 'Nova' }} Tarefa de Video</h4>
                     </div>
                     <div class="card-content">
                         <div class="card-body">
@@ -14,12 +14,28 @@
                                 <input type="hidden" name="id" value="{{ $data->id ?? '' }}">
                                 <div class="row">
                                     <div class="col-md-6 mb-2">
-                                        <label>Título da Tarefa</label>
+                                        <label>Titulo da tarefa</label>
                                         <input type="text" name="title" class="form-control" value="{{ $data->title ?? '' }}" required>
                                     </div>
                                     <div class="col-md-6 mb-2">
-                                        <label>Embed URL do Vídeo (ex: https://www.youtube.com/embed/...)</label>
+                                        <label>Embed URL do video</label>
                                         <input type="text" name="video_url" class="form-control" value="{{ $data->video_url ?? '' }}" required>
+                                    </div>
+                                    <div class="col-12 mb-2">
+                                        <label>Descricao</label>
+                                        <textarea name="description" class="form-control" rows="3">{{ $data->description ?? '' }}</textarea>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label>Tempo minimo (segundos)</label>
+                                        <input type="number" name="watch_seconds" class="form-control" min="5" value="{{ $data->watch_seconds ?? 30 }}" required>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label>Ordem</label>
+                                        <input type="number" name="sort_order" class="form-control" min="0" value="{{ $data->sort_order ?? 0 }}">
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label>Icone Material</label>
+                                        <input type="text" name="icon" class="form-control" value="{{ $data->icon ?? 'play_circle' }}" placeholder="play_circle">
                                     </div>
                                     <div class="col-md-6 mb-2">
                                         <label>Status</label>

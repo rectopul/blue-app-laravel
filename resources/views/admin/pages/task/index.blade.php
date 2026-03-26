@@ -1,11 +1,11 @@
-@extends('admin.partials.master')
+﻿@extends('admin.partials.master')
 @section('admin_content')
     <section id="dashboard-ecommerce">
         <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Tarefas de Vídeo</h4>
+                        <h4 class="card-title">Tarefas de Video</h4>
                         <a href="{{ route('admin.task.create') }}" class="btn btn-primary">Nova Tarefa</a>
                     </div>
                     <div class="card-content">
@@ -14,16 +14,22 @@
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <th>Título</th>
-                                            <th>Vídeo URL</th>
+                                            <th>Titulo</th>
+                                            <th>Tempo</th>
+                                            <th>Ordem</th>
+                                            <th>Icone</th>
+                                            <th>Video URL</th>
                                             <th>Status</th>
-                                            <th>Ações</th>
+                                            <th>Acoes</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach($tasks as $t)
                                             <tr>
                                                 <td>{{ $t->title }}</td>
+                                                <td>{{ $t->watch_seconds ?? 30 }}s</td>
+                                                <td>{{ $t->sort_order ?? 0 }}</td>
+                                                <td>{{ $t->icon ?? 'play_circle' }}</td>
                                                 <td><small>{{ $t->video_url }}</small></td>
                                                 <td>{{ $t->is_active ? 'Ativo' : 'Inativo' }}</td>
                                                 <td>

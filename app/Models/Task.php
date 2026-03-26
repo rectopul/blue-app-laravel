@@ -11,7 +11,11 @@ class Task extends Model
 
     protected $fillable = [
         'title',
+        'description',
         'video_url',
+        'watch_seconds',
+        'sort_order',
+        'icon',
         'is_active',
         'amount',
         'task_code',
@@ -21,5 +25,7 @@ class Task extends Model
     protected $casts = [
         'is_active' => 'boolean',
         'amount' => 'float',
+        'watch_seconds' => 'integer',
+        'sort_order' => 'integer',
     ];
 }
