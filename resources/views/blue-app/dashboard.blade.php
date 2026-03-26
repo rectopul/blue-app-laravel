@@ -1,4 +1,4 @@
-﻿@extends('layouts.blueapp')
+@extends('layouts.blueapp')
 
 @section('content')
     <div x-data="dashboardApp()" class="pb-28">
@@ -7,7 +7,7 @@
             {{-- Header --}}
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-xs font-medium text-pink-400">OlÃ¡, {{ $user->name }} âœ¨</p>
+                    <p class="text-xs font-medium text-pink-400">Olá, {{ $user->name }} ✨</p>
                     <h1 class="text-[26px] font-bold tracking-tight text-slate-800">
                         Easter<span class="text-pink-500">Eggs</span><span class="text-blue-400">.</span>
                     </h1>
@@ -21,9 +21,9 @@
                     </button>
                     @endif
 
-                    {{-- NotificaÃ§Ã£o --}}
+                    {{-- Notificação --}}
                     <button class="relative grid h-12 w-12 place-items-center rounded-[20px] bg-white shadow-sm border border-pink-50 active:scale-[0.98]">
-                        <span class="text-xl">ðŸ””</span>
+                        <span class="text-xl">🔔</span>
                         <span class="absolute right-2.5 top-2.5 h-3 w-3 rounded-full bg-pink-500 ring-4 ring-white"></span>
                     </button>
                 </div>
@@ -35,7 +35,7 @@
                 <div class="flex items-center justify-between">
                     <p class="text-sm font-medium text-white/90">Meus atalhos</p>
                     <button class="grid h-8 w-8 place-items-center rounded-xl bg-white/20 text-white ring-1 ring-white/20">
-                        <span class="text-xl leading-none">â€¦</span>
+                        <span class="text-xl leading-none">…</span>
                     </button>
                 </div>
 
@@ -44,18 +44,18 @@
                     {{-- Rede --}}
                     <a href="{{ route('user.team') }}" class="flex shrink-0 flex-col items-center gap-2">
                         <span class="grid h-[58px] w-[58px] place-items-center rounded-full border-2 border-dashed border-white/60 bg-white/10 text-white">
-                            <span class="text-xl">ðŸ“Š</span>
+                            <span class="text-xl">📊</span>
                         </span>
                         <span class="text-[11px] text-white/90">Rede</span>
                     </a>
 
                     @php
                         $categories = [
-                            ['label' => 'Tarefas', 'icon' => 'ðŸŽ¯', 'link' => route('user.tasks.index')],
-                            ['label' => 'DepÃ³sito', 'icon' => 'ðŸ“ˆ', 'link' => route('user.deposit')],
-                            ['label' => 'Saque', 'icon' => 'ðŸ¦', 'link' => route('user.withdraw')],
-                            ['label' => 'HistÃ³rico', 'icon' => 'ðŸ—“ï¸', 'link' => route('history')],
-                            ['label' => 'Perfil', 'icon' => 'ðŸ‘¤', 'link' => route('profile')],
+                            ['label' => 'Tarefas', 'icon' => '🎯', 'link' => route('user.tasks.index')],
+                            ['label' => 'Depósito', 'icon' => '📈', 'link' => route('user.deposit')],
+                            ['label' => 'Saque', 'icon' => '🏦', 'link' => route('user.withdraw')],
+                            ['label' => 'Histórico', 'icon' => '🗓️', 'link' => route('history')],
+                            ['label' => 'Perfil', 'icon' => '👤', 'link' => route('profile')],
                         ];
                     @endphp
 
@@ -70,7 +70,7 @@
                 </div>
             </div>
 
-            {{-- Carteira rÃ¡pida --}}
+            {{-- Carteira rápida --}}
             <div class="mt-5 grid grid-cols-2 gap-4">
                 <div class="rounded-[28px] bg-white p-5 shadow-sm border border-pink-50/50">
                     <p class="text-[11px] font-bold text-pink-300 uppercase tracking-wider">Saldo</p>
@@ -96,13 +96,13 @@
             </div>
         </div>
 
-        {{-- ConteÃºdo principal --}}
+        {{-- Conteúdo principal --}}
         <div class="px-5 pt-4">
             {{-- Tabs --}}
             <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
                 <button @click="tab = 'todos'" :class="tab === 'todos' ? 'bg-white shadow-sm ring-1 ring-black/5 text-slate-900' : 'bg-white/40 text-slate-500'" class="inline-flex items-center gap-2 rounded-2xl px-4 py-2 text-sm font-medium smooth-transition">
                     Todos
-                    <span x-show="tab === 'todos'" class="grid h-5 min-w-5 place-items-center rounded-full bg-[#EAF4FF] px-1 text-xs text-[#2C95EF]">âœ“</span>
+                    <span x-show="tab === 'todos'" class="grid h-5 min-w-5 place-items-center rounded-full bg-[#EAF4FF] px-1 text-xs text-[#2C95EF]">✓</span>
                 </button>
 
                 <button @click="tab = 'ativos'" :class="tab === 'ativos' ? 'bg-white shadow-sm ring-1 ring-black/5 text-slate-900' : 'bg-white/40 text-slate-500'" class="inline-flex items-center gap-2 rounded-2xl px-4 py-2 text-sm font-medium smooth-transition">
@@ -111,11 +111,11 @@
                 </button>
             </div>
 
-            {{-- SeÃ§Ã£o: Planos para investir --}}
+            {{-- Seção: Planos para investir --}}
             <div id="investimentos" class="mt-6" x-show="tab === 'todos'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
                 <div class="flex items-center justify-between">
-                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-[0.2em]">SeleÃ§Ã£o de Ovos</h2>
-                    <a href="#" class="text-xs font-bold text-pink-500">Ver CatÃ¡logo</a>
+                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-[0.2em]">Seleção de Ovos</h2>
+                    <a href="#" class="text-xs font-bold text-pink-500">Ver Catálogo</a>
                 </div>
 
                 <div class="mt-4 flex gap-5 overflow-x-auto no-scrollbar pb-6">
@@ -150,7 +150,7 @@
 
                                 <button @click="openConfirmModal({{ $package->id }}, '{{ $package->name }}', {{ $package->price }})"
                                     class="mt-2 h-10 w-10 rounded-full bg-white flex items-center justify-center shadow-lg active:scale-90 transition-all">
-                                    <span class="{{ $color['text'] }} text-xl">ï¼‹</span>
+                                    <span class="{{ $color['text'] }} text-xl">＋</span>
                                 </button>
                             </div>
                         </div>
@@ -158,12 +158,12 @@
                 </div>
             </div>
 
-            {{-- SeÃ§Ã£o: Meus Investimentos --}}
+            {{-- Seção: Meus Investimentos --}}
             <div class="mt-6" x-show="tab === 'ativos' || tab === 'todos'" x-transition>
                 <div class="flex items-center justify-between">
                     <h2 class="text-sm font-semibold text-slate-800 uppercase tracking-wider">Meus investimentos</h2>
                     <button class="grid h-9 w-9 place-items-center rounded-2xl bg-white shadow-sm ring-1 ring-black/5">
-                        <span class="text-xl leading-none">â€¦</span>
+                        <span class="text-xl leading-none">…</span>
                     </button>
                 </div>
 
@@ -172,7 +172,7 @@
                         <div class="flex items-center gap-4 rounded-[28px] bg-white p-5 shadow-sm border border-slate-100">
                             <div class="relative">
                                 <div class="grid h-14 w-14 place-items-center rounded-2xl bg-blue-50 text-[#2C95EF]">
-                                    <span class="text-2xl">ðŸ’¼</span>
+                                    <span class="text-2xl">💼</span>
                                 </div>
                                 <span class="absolute -bottom-1 -right-1 h-5 w-5 rounded-full {{ $inv->status === 'active' ? 'bg-emerald-500' : 'bg-amber-500' }} border-4 border-white"></span>
                             </div>
@@ -217,9 +217,9 @@
                         </div>
                     @empty
                         <div class="py-12 text-center bg-white rounded-[28px] border border-dashed border-slate-200">
-                            <span class="text-4xl block mb-2">ðŸ“¥</span>
-                            <p class="text-sm font-medium text-slate-500">VocÃª ainda nÃ£o tem investimentos ativos.</p>
-                            <a href="#investimentos" @click="tab = 'todos'" class="mt-4 inline-block text-sm font-bold text-[#2C95EF]">ComeÃ§ar agora â†’</a>
+                            <span class="text-4xl block mb-2">📥</span>
+                            <p class="text-sm font-medium text-slate-500">Você ainda não tem investimentos ativos.</p>
+                            <a href="#investimentos" @click="tab = 'todos'" class="mt-4 inline-block text-sm font-bold text-[#2C95EF]">Começar agora →</a>
                         </div>
                     @endforelse
                 </div>
@@ -233,7 +233,7 @@
             <div x-show="confirmModal" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-full sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" class="relative w-full max-w-sm bg-white rounded-t-[40px] sm:rounded-[40px] overflow-hidden shadow-2xl">
                 <div class="p-8 text-center">
                     <div class="mx-auto w-24 h-24 bg-pink-50 rounded-[30px] flex items-center justify-center mb-6">
-                        <span class="text-5xl">ðŸ¥š</span>
+                        <span class="text-5xl">🥚</span>
                     </div>
                     <h3 class="text-2xl font-bold text-slate-800 mb-2">Confirmar investimento?</h3>
                     <p class="text-sm font-medium text-slate-400 mb-6">Deseja adquirir o ovo <span class="font-bold text-pink-500" x-text="selectedPackage.name"></span> por <strong class="text-slate-800">R$ <span x-text="formatMoney(selectedPackage.price)"></span></strong>?</p>
@@ -354,7 +354,7 @@
                         }
                     } catch (error) {
                         console.error('Erro:', error);
-                        alert('Erro de conexÃ£o com o servidor.');
+                        alert('Erro de conexão com o servidor.');
                         this.loading = false;
                     }
                 },

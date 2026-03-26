@@ -1,4 +1,4 @@
-﻿# Documentacao do Sistema de Investimentos
+# Documentacao do Sistema de Investimentos
 
 ## 1. Visao geral
 

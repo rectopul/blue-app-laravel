@@ -1,4 +1,4 @@
-﻿@extends('layouts.blueapp')
+@extends('layouts.blueapp')
 
 @section('content')
     <div x-data="taskViewer()" class="min-h-screen bg-[#F0F7FF] flex flex-col">

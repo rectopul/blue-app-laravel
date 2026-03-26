@@ -108,20 +108,20 @@ class User extends Authenticatable
         return $this->hasMany(User::class, 'ref_by', 'ref_id');
     }
 
-    // NÃ­vel 1 - Diretos
+    // Nível 1 - Diretos
     public function levelOneReferrals()
     {
         return $this->hasMany(User::class, 'ref_by', 'ref_id');
     }
 
-    // NÃ­vel 2 - IndicaÃ§Ãµes dos diretos
+    // Nível 2 - Indicações dos diretos
     public function levelTwoReferrals()
     {
         return $this->hasManyThrough(
             User::class,
             User::class,
-            'ref_by',     // foreign key on intermediate (1Âº nÃ­vel)
-            'ref_by',     // foreign key on final (2Âº nÃ­vel)
+            'ref_by',     // foreign key on intermediate (1º nível)
+            'ref_by',     // foreign key on final (2º nível)
             'ref_id',     // local key on parent
             'ref_id'      // local key on intermediate
         );
@@ -153,16 +153,16 @@ class User extends Authenticatable
         }
     }
 
-    // NÃ­vel 3 - IndicaÃ§Ãµes do segundo nÃ­vel
+    // Nível 3 - Indicações do segundo nível
     public function levelThreeReferrals()
     {
         return $this->hasManyThrough(
             User::class,
             User::class,
-            'ref_by', // fk em nÃ­vel 2
-            'ref_by', // fk em nÃ­vel 3
+            'ref_by', // fk em nível 2
+            'ref_by', // fk em nível 3
             'ref_id', // ref atual
-            'ref_id'  // ref intermediÃ¡rio
+            'ref_id'  // ref intermediário
         )->join('users as u2', 'users.ref_by', '=', 'u2.ref_id')
             ->join('users as u3', 'u2.ref_by', '=', 'u3.ref_id')
             ->where('u3.ref_by', $this->ref_id)
@@ -209,7 +209,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Diminui o saldo do usuÃ¡rio.
+     * Diminui o saldo do usuário.
      *
      * @param int $amountCents
      */
@@ -220,7 +220,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Relacionamento para o usuÃ¡rio que indicou este usuÃ¡rio (o "referrer").
+     * Relacionamento para o usuário que indicou este usuário (o "referrer").
      *
      * @return BelongsTo
      */
@@ -230,18 +230,18 @@ class User extends Authenticatable
     }
 
     /**
-     * Processa a comissÃ£o de indicaÃ§Ã£o para atÃ© 5 nÃ­veis.
+     * Processa a comissão de indicação para até 5 níveis.
      *
-     * @param float $amount O valor base para o cÃ¡lculo da comissÃ£o.
+     * @param float $amount O valor base para o cálculo da comissão.
      */
-    public function processComissionReferral(float $amount, string $description = 'ComissÃ£o de indicaÃ§Ã£o do nÃ­vel')
+    public function processComissionReferral(float $amount, string $description = 'Comissão de indicação do nível')
     {
-        // Pega as taxas de comissÃ£o do modelo Rebate. Assumimos que hÃ¡ uma Ãºnica entrada.
+        // Pega as taxas de comissão do modelo Rebate. Assumimos que há uma única entrada.
         $rebateRates = Rebate::first();
 
         Log::info('[DADOS REBATE]: ' . json_encode($rebateRates, JSON_PRETTY_PRINT));
 
-        // Se nÃ£o houver taxas de comissÃ£o, nÃ£o hÃ¡ o que processar.
+        // Se não houver taxas de comissão, não há o que processar.
         if (!$rebateRates) {
             return;
         }
@@ -251,9 +251,9 @@ class User extends Authenticatable
         Log::info('[VALOR DO INVESTIMENTO] USER: ' . $amount);
 
 
-        // Itera sobre os nÃ­veis de indicaÃ§Ã£o, atÃ© 3 nÃ­veis ou atÃ© que nÃ£o haja mais um referrer.
+        // Itera sobre os níveis de indicação, até 3 níveis ou até que não haja mais um referrer.
         while ($referrer && $currentLevel <= 3) {
-            // ConstrÃ³i o nome da coluna dinamicamente
+            // Constrói o nome da coluna dinamicamente
             $commissionKey = match ($currentLevel) {
                 1 => 'first_level_percentage',
                 2 => 'second_level_percentage',
@@ -263,20 +263,20 @@ class User extends Authenticatable
             $commissionRate = $rebateRates->{$commissionKey} ?? 0;
 
             if ($commissionRate > 0) {
-                // Calcula o valor da comissÃ£o e converte para centavos.
+                // Calcula o valor da comissão e converte para centavos.
                 $commissionAmount = $amount * ($commissionRate / 100);
 
-                Log::info('[PROCESSANDO COMISSÃƒO] USER: ' . $referrer->id . ' VALOR: ' .  (float) $commissionAmount);
+                Log::info('[PROCESSANDO COMISSÃO] USER: ' . $referrer->id . ' VALOR: ' .  (float) $commissionAmount);
 
                 // Aumenta o saldo do referrer.
                 $referrer->addBalance($commissionAmount);
 
 
-                // Atualiza o total de comissÃ£o do referrer.
+                // Atualiza o total de comissão do referrer.
                 $referrer->total_commission += $commissionAmount;
                 $referrer->save();
 
-                // Registra a comissÃ£o no ledger do usuÃ¡rio para auditoria.
+                // Registra a comissão no ledger do usuário para auditoria.
                 $referrer->ledgers()->create([
                     'reference_type' => 'commission',
                     'get_balance_from_user_id' => $this->id,
@@ -286,19 +286,19 @@ class User extends Authenticatable
                     'step' => $currentLevel,
                     'status' => 'approved',
                     'reason' => "commission_indication",
-                    'perticulation' => "ComissÃ£o de indicaÃ§Ã£o do nÃ­vel {$currentLevel} de " . $this->name ?? $this->phone,
+                    'perticulation' => "Comissão de indicação do nível {$currentLevel} de " . $this->name ?? $this->phone,
                     'amount' => $commissionAmount,
                 ]);
             }
 
-            // Move para o prÃ³ximo nÃ­vel de referrer.
+            // Move para o próximo nível de referrer.
             $referrer = $referrer->referrer;
             $currentLevel++;
         }
     }
 
     /**
-     * Aumenta o saldo do usuÃ¡rio.
+     * Aumenta o saldo do usuário.
      *
      * @param int $amountCents
      */
