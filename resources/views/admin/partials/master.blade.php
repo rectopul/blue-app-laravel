@@ -435,6 +435,16 @@
                             class="menu-item" data-i18n="Section">Invest Record</span></a>
                 </li>
 
+                <li class="@if ($route == 'admin.gamification.index') active @else @endif">
+                    <a href="{{ route('admin.gamification.index') }}"><i class="bx bx-gift"></i><span
+                            class="menu-item" data-i18n="Section">Ovos Escondidos</span></a>
+                </li>
+
+                <li class="@if ($route == 'admin.task.index') active @else @endif">
+                    <a href="{{ route('admin.task.index') }}"><i class="bx bx-task"></i><span
+                            class="menu-item" data-i18n="Section">Tarefas de Vídeo</span></a>
+                </li>
+
                 <li class="nav-item @if ($route == 'admin.payment.pending' || $route == 'admin.payment.rejected' || $route == 'admin.payment.approved') sidebar-group-active open active @else @endif">
                     <a href="#"> <i class="bx bx-right-arrow"></i> <span class="menu-title"
                             data-i18n="Invoice">Customer Payments</span></a>

@@ -46,7 +46,7 @@ class WithdrawController extends Controller
 
         $token = $user->createToken('MeuTokenAPI')->plainTextToken;
 
-        return view('dmk.withdraw', compact('saquesCount', 'lastSaque', 'setting', 'user', 'token'));
+        return view('blue-app.withdraw.index', compact('saquesCount', 'lastSaque', 'setting', 'user', 'token'));
     }
 
     public function withdraw_history()

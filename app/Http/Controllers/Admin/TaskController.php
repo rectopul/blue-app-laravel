@@ -12,37 +12,37 @@ class TaskController extends Controller
     public $route = 'admin.task';
     public function index()
     {
-        $data = Task::first();
-        return view('admin.pages.task.index', compact('data'));
+        $tasks = Task::all();
+        return view('admin.pages.task.index', compact('tasks'));
     }
 
-    public function create($id=null)
+    public function create($id = null)
     {
         $data = null;
-        if ($id){
+        if ($id) {
             $data = Task::find($id);
         }
-        return view('admin.pages.improvement.insert', compact('data'));
+        return view('admin.pages.task.insert', compact('data'));
     }
 
     public function insert_or_update(Request $request)
     {
-        $this->validate($request,[
-            'task_code'=> 'required',
-            'remaining_code'=> 'required|numeric',
-            'amount'=> 'required|numeric',
+        $this->validate($request, [
+            'title' => 'required',
+            'video_url' => 'required',
         ]);
 
-        if ($request->id){
+        if ($request->id) {
             $model = Task::findOrFail($request->id);
-        }else{
+        } else {
             $model = new Task();
+            $model->remaining_code = '999';
         }
-        $model->task_code = $request->task_code;
-        $model->remaining_code = $request->remaining_code;
-        $model->amount = $request->amount;
+        $model->title = $request->title;
+        $model->video_url = $request->video_url;
+        $model->is_active = $request->is_active ?? true;
         $model->save();
-        return redirect()->route($this->route.'.index')->with('success', $request->id ? 'Improvement Updated Successful.' : 'Improvement Created Successful.');
+        return redirect()->route($this->route . '.index')->with('success', $request->id ? 'Task Updated Successful.' : 'Task Created Successful.');
     }
 
     public function delete($id)
