@@ -761,7 +761,7 @@ class UserController extends Controller
         $withdrawals = $user->withdrawals()->orderBy('id', 'desc')->get();
         $commissions = $user->commissions()->orderBy('id', 'desc')->get();
         $ledgers = $user->ledgers()->orderBy('id', 'desc')->get();
-        return view('dmk.transactions', compact('condition', 'deposits', 'withdrawals', 'commissions', 'ledgers'));
+        return view('blue-app.history.index', compact('condition', 'deposits', 'withdrawals', 'commissions', 'ledgers'));
     }
 
     public function history($condition = null)
@@ -771,7 +771,7 @@ class UserController extends Controller
         $withdrawals = $user->withdrawals()->orderBy('id', 'desc')->get();
         $commissions = $user->commissions()->orderBy('id', 'desc')->get();
         $ledgers = $user->ledgers()->orderBy('id', 'desc')->get();
-        return view('app.main.history', compact('condition', 'deposits', 'withdrawals', 'commissions', 'ledgers'));
+        return view('blue-app.history.index', compact('condition', 'deposits', 'withdrawals', 'commissions', 'ledgers'));
     }
 
     public function history_all()
@@ -964,7 +964,7 @@ class UserController extends Controller
         $first_level_users = $referralCounts['level_1'];
         $third_level_users = $referralCounts['level_3'];
         $second_level_users = $referralCounts['level_2'];
-        return view('app.main.profile', compact('user', 'team_size', 'first_level_users', 'third_level_users', 'second_level_users'));
+        return view('blue-app.profile.index', compact('user', 'team_size', 'first_level_users', 'third_level_users', 'second_level_users'));
     }
 
     public function team()
