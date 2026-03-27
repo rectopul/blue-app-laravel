@@ -27,12 +27,14 @@ class AuthController extends Controller
      */
     public function store(Request $request)
     {
+        // Remove caracteres não numéricos se for um telefone (máscara)
+        $auth = preg_replace('/\D/', '', $request->auth);
 
         if ($request->auth == '' || $request->auth == null || $request->password == '') {
             return redirect()->back()->with('error', 'Telefone ou senha incorretos');
         }
 
-        $user = User::where('phone', $request->auth)->orWhere('email', $request->auth)->first();
+        $user = User::where('phone', $auth)->orWhere('email', $request->auth)->first();
 
         if (Auth::check()) {
             return redirect()->route('dashboard');

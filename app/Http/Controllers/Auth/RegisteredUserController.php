@@ -43,6 +43,11 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request)
     {
+        // Remove máscara do telefone
+        $request->merge([
+            'phone' => preg_replace('/\D/', '', $request->phone)
+        ]);
+
         $validate = Validator::make($request->all(), [
             'phone' => ['required', 'numeric', 'unique:users,phone'],
             'password' => ['required'],
