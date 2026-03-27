@@ -1,7 +1,7 @@
 @extends('layouts.blueapp')
 
 @section('content')
-    <div x-data="taskViewer()" class="min-h-screen bg-[#F0F7FF] flex flex-col">
+    <div x-data="taskViewer()" class="min-h-screen bg-[#F0F7FF] flex flex-col pb-12">
         <div class="px-5 pt-8 pb-4 flex items-center justify-between">
             <a href="{{ route('user.tasks.index') }}" class="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm text-slate-400">
                 <span class="material-symbols-outlined">arrow_back</span>
@@ -38,8 +38,12 @@
                     <span class="material-symbols-outlined text-[30px]">{{ $task->icon ?: 'play_circle' }}</span>
                 </div>
                 <h2 class="text-xl font-bold text-slate-800">{{ $task->title ?: 'Assistir video para ganhar' }}</h2>
+                <div class="mt-2 inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-[10px] font-bold text-blue-500 uppercase">
+                    <span class="material-symbols-outlined !text-xs">inventory_2</span>
+                    Plano: {{ $purchase->package->name }}
+                </div>
                 <p class="mt-3 text-sm font-medium leading-relaxed text-slate-400">
-                    {{ $task->description ?: 'Assista ao video ate o fim do contador para liberar o credito do rendimento diario.' }}
+                    {{ $task->description ?: 'Assista ao video ate o fim do contador para liberar o credito do rendimento diario deste plano.' }}
                 </p>
             </div>
 
@@ -54,7 +58,7 @@
                 </div>
             </div>
 
-            <div class="mt-auto mb-12 px-4">
+            <div class="mt-12 mb-12 px-4">
                 <button
                     @click="completeTask()"
                     :disabled="timeLeft > 0 || loading"
@@ -96,8 +100,12 @@
                             method: 'POST',
                             headers: {
                                 'Accept': 'application/json',
+                                'Content-Type': 'application/json',
                                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                            }
+                            },
+                            body: JSON.stringify({
+                                purchase_id: {{ $purchase->id }}
+                            })
                         });
 
                         const result = await response.json();

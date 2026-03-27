@@ -10,66 +10,83 @@ use Carbon\Carbon;
 
 class TaskService
 {
-    public function getActivePlan(User $user)
+    public function getActivePurchases(User $user)
     {
-        $purchase = Purchase::with('package')
+        return Purchase::with('package')
             ->where('user_id', $user->id)
             ->where('status', 'active')
-            ->latest()
-            ->first();
-
-        return $purchase ? $purchase->package : null;
+            ->where('expires_at', '>', now())
+            ->get();
     }
 
-    public function getAvailableTasks(User $user)
+    public function getDailyStatsForPurchase(User $user, Purchase $purchase)
     {
-        $plan = $this->getActivePlan($user);
-        $limit = max(0, (int) ($plan ? $plan->daily_tasks_limit : 1));
+        $package = $purchase->package;
+        $limit = $package ? $package->daily_tasks_limit : 0;
 
-        if ($limit === 0) {
+        $count = UserTaskCompletion::where('user_id', $user->id)
+            ->where('purchase_id', $purchase->id)
+            ->whereDate('completion_date', Carbon::today())
+            ->count();
+
+        return [
+            'purchase_id' => $purchase->id,
+            'completed' => $count,
+            'limit' => $limit,
+            'remaining' => max(0, $limit - $count),
+            'package_name' => $package ? $package->name : 'N/A',
+            'reward_per_task' => $this->calculateRewardPerTaskForPurchase($purchase)
+        ];
+    }
+
+    public function calculateRewardPerTaskForPurchase(Purchase $purchase)
+    {
+        $package = $purchase->package;
+        if (!$package || $package->daily_tasks_limit <= 0) {
+            return 0;
+        }
+
+        // De acordo com a nova UI do Admin, 'daily_reward' é a recompensa individual por cada tarefa.
+        if ($package->daily_reward > 0) {
+            return (float) $package->daily_reward;
+        }
+
+        // Fallback: se não houver daily_reward definido, divide o daily_income total (ROI diário) pelas tasks.
+        return $purchase->daily_income / $package->daily_tasks_limit;
+    }
+
+    public function getAvailableTasksForPurchase(User $user, Purchase $purchase)
+    {
+        $stats = $this->getDailyStatsForPurchase($user, $purchase);
+
+        if ($stats['remaining'] <= 0) {
             return collect();
         }
 
-        $completedTodayIds = UserTaskCompletion::where('user_id', $user->id)
+        $completedTodayForPurchaseIds = UserTaskCompletion::where('user_id', $user->id)
+            ->where('purchase_id', $purchase->id)
             ->whereDate('completion_date', Carbon::today())
             ->pluck('task_id')
             ->toArray();
 
         return Task::where('is_active', true)
-            ->whereNotIn('id', $completedTodayIds)
+            ->whereNotIn('id', $completedTodayForPurchaseIds)
             ->orderBy('sort_order')
             ->orderBy('id')
-            ->limit($limit)
+            ->limit($stats['remaining'])
             ->get();
     }
 
+    // Mantendo métodos legados para compatibilidade se necessário, mas adaptando
     public function getDailyStats(User $user)
     {
-        $plan = $this->getActivePlan($user);
-        $limit = $plan ? $plan->daily_tasks_limit : 1;
-        $count = UserTaskCompletion::where('user_id', $user->id)
-            ->whereDate('completion_date', Carbon::today())
-            ->count();
+        $purchases = $this->getActivePurchases($user);
+        $allStats = [];
 
-        return [
-            'completed' => $count,
-            'limit' => $limit,
-            'remaining' => max(0, $limit - $count),
-            'plan_name' => $plan ? $plan->name : 'Plano Gratuito',
-            'reward_per_task' => $this->calculateRewardPerTask($plan)
-        ];
-    }
-
-    public function calculateRewardPerTask($plan)
-    {
-        if (!$plan) {
-            return 1.00;
+        foreach ($purchases as $purchase) {
+            $allStats[] = $this->getDailyStatsForPurchase($user, $purchase);
         }
 
-        if ($plan->daily_tasks_limit > 0) {
-            return $plan->daily_reward / $plan->daily_tasks_limit;
-        }
-
-        return 0;
+        return $allStats;
     }
 }
