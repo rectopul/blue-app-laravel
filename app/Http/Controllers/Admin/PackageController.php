@@ -83,6 +83,8 @@ class PackageController extends Controller
             'price' => 'required|numeric',
             'validity' => 'required|numeric',
             'commission_with_avg_amount' => 'required|numeric',
+            'daily_tasks_limit' => 'required|numeric',
+            'daily_reward' => 'required|numeric',
         ]);
         if ($request->id) {
             $model = Package::findOrFail($request->id);
@@ -92,7 +94,7 @@ class PackageController extends Controller
         }
 
         $percent_total_return = $request->validity * $request->commission_with_avg_amount;
-        $total_return_amount = $request->price * ($percent_total_return / 100);
+        $total_return_amount = ($request->price * ($percent_total_return / 100)) + ($request->daily_tasks_limit * $request->daily_reward * $request->validity);
         $path = uploadImage(false, $request, 'photo', 'upload/package/', 200, 200, $model->photo);
         $model->photo = $path ?? $model->photo;
         $model->name = $request->name;
@@ -100,6 +102,8 @@ class PackageController extends Controller
         $model->price = $request->price;
         $model->validity = $request->validity;
         $model->commission_with_avg_amount = $request->commission_with_avg_amount;
+        $model->daily_tasks_limit = $request->daily_tasks_limit;
+        $model->daily_reward = $request->daily_reward;
         $model->total_return_amount = $total_return_amount;
         $model->total_return_percent = $percent_total_return;
         $model->save();

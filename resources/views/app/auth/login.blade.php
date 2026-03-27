@@ -1,7 +1,7 @@
 @extends('layouts.blueapp')
 
 @section('content')
-<div class="flex min-h-screen flex-col bg-gradient-to-b from-[#FFF5F8] via-[#FFEBF2] to-[#F0F7FF] px-6 py-12">
+<div x-data class="flex min-h-screen flex-col bg-gradient-to-b from-[#FFF5F8] via-[#FFEBF2] to-[#F0F7FF] px-6 py-12">
     <div class="flex-1">
         <div class="mb-12 text-center">
             <div class="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-[32px] bg-white shadow-xl shadow-pink-100 ring-1 ring-pink-50">
@@ -30,6 +30,7 @@
                     <div class="relative flex items-center">
                         <span class="material-symbols-outlined absolute left-4 text-pink-400">phone_iphone</span>
                         <input type="tel" id="phone" name="auth" required
+                            x-mask="(99) 99999-9999"
                             class="w-full rounded-2xl border-none bg-slate-50 py-4 pl-12 pr-4 text-sm font-bold text-slate-700 outline-none ring-1 ring-slate-100 transition-all focus:bg-white focus:ring-2 focus:ring-pink-200"
                             placeholder="(00) 00000-0000">
                     </div>
