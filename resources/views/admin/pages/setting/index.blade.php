@@ -73,15 +73,27 @@
                                             </div>
 
                                             <div class="col-sm-6">
-                                                <label for="checkin">Daily Checkin Amount</label>
+                                                <label for="free_task_video_url">Free Task Video URL (YouTube)</label>
+                                                <input type="text" class="form-control is-valid"
+                                                       name="free_task_video_url" id="free_task_video_url"
+                                                       placeholder="https://www.youtube.com/watch?v=..."
+                                                       value="{{$data ? $data->free_task_video_url : old('free_task_video_url')}}">
+                                            </div>
+
+                                            <div class="col-sm-3">
+                                                <label for="free_task_reward">Free Task Reward</label>
+                                                <input type="number" step="0.01" class="form-control is-valid"
+                                                       name="free_task_reward" id="free_task_reward"
+                                                       placeholder="0.00"
+                                                       value="{{$data ? $data->free_task_reward : old('free_task_reward')}}">
+                                            </div>
+
+                                            <div class="col-sm-3">
+                                                <label for="free_task_seconds">Free Task Seconds</label>
                                                 <input type="number" class="form-control is-valid"
-                                                       name="checkin" id="checkin"
-                                                       placeholder="Daily Checkin"
-                                                       value="{{$data ? $data->checkin : old('checkin')}}">
-                                                <div class="valid-feedback">
-                                                    <i class="bx bx-radio-circle"></i>
-                                                    Note: This is filed is optional
-                                                </div>
+                                                       name="free_task_seconds" id="free_task_seconds"
+                                                       placeholder="30"
+                                                       value="{{$data ? $data->free_task_seconds : old('free_task_seconds')}}">
                                             </div>
 
                                             <div class="col-sm-6">

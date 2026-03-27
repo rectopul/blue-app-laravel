@@ -13,7 +13,7 @@
         <div class="px-5 mt-4 flex-1 flex flex-col">
             <div class="aspect-video w-full overflow-hidden rounded-[30px] bg-black shadow-2xl relative">
                 @if($task->video_url)
-                    <iframe class="h-full w-full" src="{{ $task->video_url }}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                    <iframe class="h-full w-full" src="{{ convertYoutubeCap($task->video_url) }}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                 @else
                     <div class="flex h-full w-full flex-col items-center justify-center gap-2 text-white/50">
                         <span class="material-symbols-outlined text-5xl">movie</span>

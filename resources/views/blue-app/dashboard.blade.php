@@ -14,13 +14,6 @@
                 </div>
 
                 <div class="flex gap-2">
-                    {{-- Check-in --}}
-                    @if($userCheckin)
-                    <button @click="doCheckin()" class="grid h-12 w-12 place-items-center rounded-[20px] bg-emerald-400 text-white shadow-lg shadow-emerald-100 active:scale-90 transition-all">
-                        <span class="material-symbols-outlined text-xl">calendar_today</span>
-                    </button>
-                    @endif
-
                     {{-- Notificação --}}
                     <button class="relative grid h-12 w-12 place-items-center rounded-[20px] bg-white shadow-sm border border-pink-50 active:scale-[0.98]">
                         <span class="text-xl">🔔</span>
@@ -358,31 +351,6 @@
                         this.loading = false;
                     }
                 },
-                async doCheckin() {
-                    try {
-                        const response = await fetch("{{ route('checkins.store') }}", {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                            }
-                        });
-                        const result = await response.json();
-                if (window.showToast) {
-                    window.showToast(result.message, 'success');
-                } else {
-                    alert(result.message);
-                }
-                setTimeout(() => window.location.reload(), 2000);
-                    } catch (error) {
-                if (window.showToast) {
-                    window.showToast('Erro ao realizar check-in', 'error');
-                } else {
-                    alert('Erro ao realizar check-in');
-                }
-                    }
-                }
             }
         }
     </script>

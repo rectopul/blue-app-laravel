@@ -293,3 +293,24 @@ if (! function_exists('registration_reword')) {
         return 15;
     }
 }
+
+if (!function_exists('convertYoutubeCap')) {
+    function convertYoutubeCap($url)
+    {
+        if (str_contains($url, 'youtube.com/watch?v=')) {
+            $url = str_replace('watch?v=', 'embed/', $url);
+            // Remove additional parameters if they exist but keep the video ID
+            if (str_contains($url, '&')) {
+                $parts = explode('&', $url);
+                $url = $parts[0];
+            }
+        } elseif (str_contains($url, 'youtu.be/')) {
+            $url = str_replace('youtu.be/', 'youtube.com/embed/', $url);
+            if (str_contains($url, '?')) {
+                $parts = explode('?', $url);
+                $url = $parts[0];
+            }
+        }
+        return $url;
+    }
+}
