@@ -1,247 +1,175 @@
 @extends('admin.partials.master')
 
 @section('admin_content')
-    <section id="dashboard-ecommerce">
-        <div class="row">
-            <div class="col-12">
+    <section id="basic-vertical-layouts">
+        <div class="row match-height">
+            <div class="col-md-8 col-12">
+                <div class="card">
+                    <div class="card-header border-bottom">
+                        <h4 class="card-title">{{ $data ? 'Editar' : 'Criar Novo' }} Pacote</h4>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <form class="form form-vertical" action="{{ route('admin.package.insert') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <input type="hidden" name="id" value="{{ $data ? $data->id : '' }}">
 
-                <form action="{{ route('admin.package.insert') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-
-                    <input type="hidden" name="id" value="{{ $data ? $data->id : '' }}">
-
-                    <div class="card">
-                        <div class="card-header">
-                            <h4 class="card-title">
-                                <div class="d-flex justify-content-between">
-                                    <div>{{ $data ? 'Update' : 'Create New' }} Package</div>
-                                    <div>
-                                        <a href="{{ route('admin.package.index') }}" class="btn btn-primary btn-sm">
-                                            <i class="bx bx-left-arrow"></i> Package List
-                                        </a>
-                                    </div>
-                                </div>
-                            </h4>
-                        </div>
-
-                        <div class="card-content">
-                            <div class="card-body">
-
-                                {{-- Alerts --}}
-                                @if ($errors->any())
-                                    <div class="alert alert-danger">
-                                        <strong>Ops!</strong> Verifique os campos abaixo.
-                                        <ul class="mb-0 mt-1">
-                                            @foreach ($errors->all() as $error)
-                                                <li>{{ $error }}</li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
-                                @endif
-
-                                <div class="row">
-
-                                    {{-- Name --}}
-                                    <div class="col-sm-6">
-                                        <label for="name">Package Name</label>
-                                        <input type="text"
-                                               class="form-control is-valid"
-                                               name="name" id="name"
-                                               placeholder="Name"
-                                               value="{{ old('name', $data ? $data->name : '') }}"
-                                               required>
-                                        <div class="valid-feedback">
-                                            <i class="bx bx-radio-circle"></i>
-                                            Note: This field is required
-                                        </div>
-                                    </div>
-
-                                    {{-- Title --}}
-                                    <div class="col-sm-6">
-                                        <label for="title">Package Title</label>
-                                        <input type="text"
-                                               class="form-control is-valid"
-                                               name="title" id="title"
-                                               placeholder="Title"
-                                               value="{{ old('title', $data ? $data->title : '') }}"
-                                               required>
-                                        <div class="valid-feedback">
-                                            <i class="bx bx-radio-circle"></i>
-                                            Note: This field is required
-                                        </div>
-                                    </div>
-
-                                    {{-- Photo --}}
-                                    <div class="col-sm-12 mt-2">
-                                        <div class="row">
-                                            <div class="col-12 col-sm-6">
-                                                <fieldset class="form-group">
-                                                    <label for="basicInputFile">
-                                                        Upload Photo
-                                                        <small>(Suggestion: size 200x200 px)</small>
-                                                    </label>
-
-                                                    <div class="custom-file">
-                                                        <input type="file"
-                                                               name="photo"
-                                                               class="custom-file-input is-valid"
-                                                               id="inputGroupFile01"
-                                                               @if(!$data) required @endif
-                                                               onchange="showPreview(event)">
-                                                        <label class="custom-file-label" for="inputGroupFile01">
-                                                            Choose file
-                                                        </label>
-
-                                                        <div class="valid-feedback">
-                                                            <i class="bx bx-radio-circle"></i>
-                                                            Note: Package image mandatory on create
-                                                        </div>
+                                <div class="form-body">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label for="name">Nome do Pacote</label>
+                                                <div class="position-relative has-icon-left">
+                                                    <input type="text" id="name" class="form-control" name="name" placeholder="Ex: Pacote Diamante" value="{{ old('name', $data ? $data->name : '') }}" required>
+                                                    <div class="form-control-position">
+                                                        <i class="bx bx-package"></i>
                                                     </div>
-
-                                                    @if($data && $data->photo)
-                                                        <small class="text-muted d-block mt-1">
-                                                            * Se você não escolher uma nova imagem, a atual será mantida.
-                                                        </small>
-                                                    @endif
-                                                </fieldset>
-                                            </div>
-
-                                            <div class="col-12 col-sm-6">
-                                                <div class="image_preview">
-                                                    <img
-                                                        src="{{ $data && $data->photo ? asset('storage/'.$data->photo) : asset(not_found_img()) }}"
-                                                        id="file-ip-1-preview"
-                                                        class="rounded"
-                                                        alt="Preview Image"
-                                                        style="width: 110px;height: 110px;object-fit: cover;">
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    {{-- Price --}}
-                                    <div class="col-sm-6 mt-2">
-                                        <label for="price">Price</label>
-                                        <input type="number"
-                                               class="form-control is-valid"
-                                               name="price" id="price"
-                                               placeholder="Price"
-                                               value="{{ old('price', $data ? $data->price : '') }}"
-                                               required
-                                               step="0.01"
-                                               oninput="calcReturns()">
-                                        <div class="valid-feedback">
-                                            <i class="bx bx-radio-circle"></i>
-                                            Note: This field is required
-                                        </div>
-                                    </div>
-
-                                    {{-- Validity --}}
-                                    <div class="col-sm-6 mt-2">
-                                        <label for="validity">Validity (days)</label>
-                                        <input type="number"
-                                               class="form-control is-valid"
-                                               name="validity" id="validity"
-                                               placeholder="Validity (days)"
-                                               value="{{ old('validity', $data ? $data->validity : '') }}"
-                                               required
-                                               oninput="calcReturns()">
-                                        <div class="valid-feedback">
-                                            <i class="bx bx-radio-circle"></i>
-                                            Note: This field is required
-                                        </div>
-                                    </div>
-
-                                    {{-- Commission --}}
-                                    <div class="col-sm-6 mt-2">
-                                        <label for="commission_with_avg_amount">Commission with average amount (%)</label>
-                                        <input type="number"
-                                               class="form-control is-valid"
-                                               name="commission_with_avg_amount"
-                                               id="commission_with_avg_amount"
-                                               placeholder="Ex: 2.5"
-                                               value="{{ old('commission_with_avg_amount', $data ? $data->commission_with_avg_amount : '') }}"
-                                               required
-                                               step="0.01"
-                                               oninput="calcReturns()">
-                                        <div class="valid-feedback">
-                                            <i class="bx bx-radio-circle"></i>
-                                            Note: This field is required
-                                        </div>
-                                    </div>
-
-                                    {{-- Daily Return Preview --}}
-                                    <div class="col-sm-6 mt-2">
-                                        <label>Daily Return (preview)</label>
-                                        <input type="text" class="form-control" id="daily_return_preview" value="R$ 0,00" readonly>
-                                        <small class="text-muted d-block mt-1">
-                                            Calculado: <b>price</b> × (<b>%</b> / 100)
-                                        </small>
-                                    </div>
-
-                                    {{-- Total Return Preview --}}
-                                    <div class="col-sm-6 mt-2">
-                                        <label>Total Return (preview)</label>
-                                        <input type="text" class="form-control" id="total_return_preview" value="R$ 0,00" readonly>
-                                        <small class="text-muted d-block mt-1">
-                                            Calculado: <b>Daily Return</b> × <b>validity (days)</b>
-                                        </small>
-                                    </div>
-
-                                    {{-- End Date Preview --}}
-                                    <div class="col-sm-6 mt-2">
-                                        <label>End Date (preview)</label>
-                                        <input type="text" class="form-control" id="end_date_preview" value="—" readonly>
-                                        <small class="text-muted d-block mt-1">
-                                            Estimativa: hoje + validity (dias)
-                                        </small>
-                                    </div>
-
-                                    {{-- Status --}}
-                                    @if($data)
-                                        <div class="col-sm-6 mt-2">
-                                            <label for="status">Package Status</label>
-                                            <select name="status" class="form-control" id="status">
-                                                <option value="active" @selected($data->status === 'active')>Active</option>
-                                                <option value="inactive" @selected($data->status === 'inactive')>In-Active</option>
-                                            </select>
-
-                                            <div class="valid-feedback">
-                                                <i class="bx bx-radio-circle"></i>
-                                                Note: This field is required
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label for="title">Título Curto</label>
+                                                <div class="position-relative has-icon-left">
+                                                    <input type="text" id="title" class="form-control" name="title" placeholder="Ex: Investimento Seguro" value="{{ old('title', $data ? $data->title : '') }}" required>
+                                                    <div class="form-control-position">
+                                                        <i class="bx bx-tag"></i>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                    @endif
 
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                                        <div class="col-md-6 col-12">
+                                            <div class="form-group">
+                                                <label for="price">Preço (R$)</label>
+                                                <div class="position-relative has-icon-left">
+                                                    <input type="number" id="price" class="form-control" name="price" placeholder="0.00" step="0.01" value="{{ old('price', $data ? $data->price : '') }}" required oninput="calcReturns()">
+                                                    <div class="form-control-position">
+                                                        <i class="bx bx-dollar"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
 
-                    {{-- Submit --}}
-                    <div class="card">
-                        <div class="card-header">
-                            <h6 class="card-title">
-                                <div class="d-flex justify-content-between">
-                                    <div style="margin-top: .7rem !important">
-                                        Submit Your Package Information
-                                    </div>
+                                        <div class="col-md-6 col-12">
+                                            <div class="form-group">
+                                                <label for="validity">Validade (Dias)</label>
+                                                <div class="position-relative has-icon-left">
+                                                    <input type="number" id="validity" class="form-control" name="validity" placeholder="30" value="{{ old('validity', $data ? $data->validity : '') }}" required oninput="calcReturns()">
+                                                    <div class="form-control-position">
+                                                        <i class="bx bx-calendar"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
 
-                                    <div>
-                                        <div class="form-group mb-0">
-                                            <button type="submit" class="btn btn-success">
-                                                <i class="bx bx-plus"></i>
-                                                {{ $data ? 'Update' : 'Submit' }}
-                                            </button>
+                                        <div class="col-md-6 col-12">
+                                            <div class="form-group">
+                                                <label for="daily_tasks_limit">Limite de Tarefas Diárias</label>
+                                                <div class="position-relative has-icon-left">
+                                                    <input type="number" id="daily_tasks_limit" class="form-control" name="daily_tasks_limit" placeholder="5" value="{{ old('daily_tasks_limit', $data ? $data->daily_tasks_limit : '0') }}" required oninput="calcReturns()">
+                                                    <div class="form-control-position">
+                                                        <i class="bx bx-list-check"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6 col-12">
+                                            <div class="form-group">
+                                                <label for="daily_reward">Recompensa por Tarefa (R$)</label>
+                                                <div class="position-relative has-icon-left">
+                                                    <input type="number" id="daily_reward" class="form-control" name="daily_reward" placeholder="1.00" step="0.01" value="{{ old('daily_reward', $data ? $data->daily_reward : '0.00') }}" required oninput="calcReturns()">
+                                                    <div class="form-control-position">
+                                                        <i class="bx bx-gift"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label for="commission_with_avg_amount">Comissão de Rendimento Diário (%)</label>
+                                                <div class="position-relative has-icon-left">
+                                                    <input type="number" id="commission_with_avg_amount" class="form-control" name="commission_with_avg_amount" placeholder="2.5" step="0.01" value="{{ old('commission_with_avg_amount', $data ? $data->commission_with_avg_amount : '') }}" required oninput="calcReturns()">
+                                                    <div class="form-control-position">
+                                                        <i class="bx bx-trending-up"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label>Imagem do Pacote</label>
+                                                <div class="custom-file">
+                                                    <input type="file" name="photo" class="custom-file-input" id="packagePhoto" onchange="showPreview(event)">
+                                                    <label class="custom-file-label" for="packagePhoto">Escolher arquivo</label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        @if($data)
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label for="status">Status do Pacote</label>
+                                                <select name="status" class="form-control" id="status">
+                                                    <option value="active" @selected($data->status === 'active')>Ativo</option>
+                                                    <option value="inactive" @selected($data->status === 'inactive')>Inativo</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        @endif
+
+                                        <div class="col-12 d-flex justify-content-end mt-2">
+                                            <button type="submit" class="btn btn-primary mr-1 mb-1">{{ $data ? 'Atualizar Pacote' : 'Criar Pacote' }}</button>
+                                            <a href="{{ route('admin.package.index') }}" class="btn btn-light-secondary mr-1 mb-1">Cancelar</a>
                                         </div>
                                     </div>
-
                                 </div>
-                            </h6>
+                            </form>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                </form>
+            <div class="col-md-4 col-12">
+                <div class="card bg-primary text-white">
+                    <div class="card-header">
+                        <h4 class="card-title text-white">Resumo do Plano</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-3">
+                            <img src="{{ $data && $data->photo ? asset(view_image($data->photo)) : asset(not_found_img()) }}" id="preview" class="rounded-circle img-border box-shadow-1" style="width: 100px; height: 100px; object-fit: cover; background: white;">
+                        </div>
+                        <ul class="list-group list-group-flush bg-transparent">
+                            <li class="list-group-item bg-transparent d-flex justify-content-between border-white/20">
+                                <span>Rendimento Diário:</span>
+                                <strong id="res_daily_yield">R$ 0,00</strong>
+                            </li>
+                            <li class="list-group-item bg-transparent d-flex justify-content-between border-white/20">
+                                <span>Ganhos por Tarefas:</span>
+                                <strong id="res_tasks_yield">R$ 0,00</strong>
+                            </li>
+                            <li class="list-group-item bg-transparent d-flex justify-content-between border-white/20">
+                                <span>Total Diário:</span>
+                                <strong id="res_total_daily">R$ 0,00</strong>
+                            </li>
+                            <li class="list-group-item bg-transparent d-flex justify-content-between border-white/20">
+                                <span>Retorno Total (ROI):</span>
+                                <strong id="res_total_roi">R$ 0,00</strong>
+                            </li>
+                            <li class="list-group-item bg-transparent d-flex justify-content-between border-white/20">
+                                <span>Lucro Líquido:</span>
+                                <strong id="res_net_profit">R$ 0,00</strong>
+                            </li>
+                        </ul>
+                        <div class="alert bg-white/10 mt-3 mb-0">
+                            <small class="d-block text-white/80">Este resumo é uma estimativa baseada nos valores preenchidos ao lado.</small>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -250,51 +178,35 @@
         function showPreview(event) {
             if (event.target.files.length > 0) {
                 const src = URL.createObjectURL(event.target.files[0]);
-                const preview = document.getElementById("file-ip-1-preview");
+                const preview = document.getElementById("preview");
                 preview.src = src;
-                preview.style.display = "block";
             }
         }
 
         function formatBRL(value) {
-            const n = Number(value || 0);
-            return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
         }
 
         function calcReturns() {
-            const price = Number(document.getElementById('price')?.value || 0);
-            const days = Number(document.getElementById('validity')?.value || 0);
-            const percent = Number(document.getElementById('commission_with_avg_amount')?.value || 0);
+            const price = parseFloat(document.getElementById('price').value) || 0;
+            const days = parseInt(document.getElementById('validity').value) || 0;
+            const dailyPercent = parseFloat(document.getElementById('commission_with_avg_amount').value) || 0;
+            const tasksLimit = parseInt(document.getElementById('daily_tasks_limit').value) || 0;
+            const taskReward = parseFloat(document.getElementById('daily_reward').value) || 0;
 
-            const daily = price * (percent / 100);
-            const total = daily * (days > 0 ? days : 0);
+            const yieldDaily = price * (dailyPercent / 100);
+            const tasksDaily = tasksLimit * taskReward;
+            const totalDaily = yieldDaily + tasksDaily;
+            const totalROI = totalDaily * days;
+            const netProfit = totalROI - price;
 
-            const dailyEl = document.getElementById('daily_return_preview');
-            const totalEl = document.getElementById('total_return_preview');
-            const endEl = document.getElementById('end_date_preview');
-
-            if (dailyEl) dailyEl.value = formatBRL(daily);
-            if (totalEl) totalEl.value = formatBRL(total);
-
-            // End date preview (hoje + dias)
-            if (endEl) {
-                if (days > 0) {
-                    const d = new Date();
-                    d.setDate(d.getDate() + days);
-
-                    const dd = String(d.getDate()).padStart(2, '0');
-                    const mm = String(d.getMonth() + 1).padStart(2, '0');
-                    const yy = d.getFullYear();
-
-                    endEl.value = `${dd}/${mm}/${yy}`;
-                } else {
-                    endEl.value = '—';
-                }
-            }
+            document.getElementById('res_daily_yield').innerText = formatBRL(yieldDaily);
+            document.getElementById('res_tasks_yield').innerText = formatBRL(tasksDaily);
+            document.getElementById('res_total_daily').innerText = formatBRL(totalDaily);
+            document.getElementById('res_total_roi').innerText = formatBRL(totalROI);
+            document.getElementById('res_net_profit').innerText = formatBRL(netProfit);
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
-            calcReturns();
-        });
+        document.addEventListener('DOMContentLoaded', calcReturns);
     </script>
 @endsection
