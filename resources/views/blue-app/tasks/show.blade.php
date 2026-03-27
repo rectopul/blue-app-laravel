@@ -38,12 +38,19 @@
                     <span class="material-symbols-outlined text-[30px]">{{ $task->icon ?: 'play_circle' }}</span>
                 </div>
                 <h2 class="text-xl font-bold text-slate-800">{{ $task->title ?: 'Assistir video para ganhar' }}</h2>
-                <div class="mt-2 inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-[10px] font-bold text-blue-500 uppercase">
-                    <span class="material-symbols-outlined !text-xs">inventory_2</span>
-                    Plano: {{ $purchase->package->name }}
-                </div>
+                @if($purchase)
+                    <div class="mt-2 inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-[10px] font-bold text-blue-500 uppercase">
+                        <span class="material-symbols-outlined !text-xs">inventory_2</span>
+                        Plano: {{ $purchase->package->name }}
+                    </div>
+                @else
+                    <div class="mt-2 inline-flex items-center gap-2 rounded-full bg-pink-50 px-3 py-1 text-[10px] font-bold text-pink-500 uppercase">
+                        <span class="material-symbols-outlined !text-xs">star</span>
+                        Plano: Grátis Diário
+                    </div>
+                @endif
                 <p class="mt-3 text-sm font-medium leading-relaxed text-slate-400">
-                    {{ $task->description ?: 'Assista ao video ate o fim do contador para liberar o credito do rendimento diario deste plano.' }}
+                    {{ $task->description ?: ($purchase ? 'Assista ao video ate o fim do contador para liberar o credito do rendimento diario deste plano.' : 'Assista ao vídeo até o fim do contador para receber seu bônus diário gratuito.') }}
                 </p>
             </div>
 
@@ -96,7 +103,7 @@
 
                     this.loading = true;
                     try {
-                        const response = await fetch("{{ route('user.tasks.complete', $task->id) }}", {
+                        const response = await fetch("{{ route('user.tasks.complete', $task->id ?: 'free') }}", {
                             method: 'POST',
                             headers: {
                                 'Accept': 'application/json',
@@ -104,7 +111,7 @@
                                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                             },
                             body: JSON.stringify({
-                                purchase_id: {{ $purchase->id }}
+                                purchase_id: {{ $purchase->id ?? 'null' }}
                             })
                         });
 
