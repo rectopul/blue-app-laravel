@@ -23,7 +23,9 @@ class SettingController extends Controller
         $model->minimum_withdraw = $request->minimum_withdraw;
         $model->maximum_withdraw = $request->maximum_withdraw;
         $model->w_time_status = $request->w_time_status;
-        $model->checkin = $request->checkin;
+        $model->free_task_video_url = $request->free_task_video_url;
+        $model->free_task_reward = $request->free_task_reward;
+        $model->free_task_seconds = $request->free_task_seconds;
         $model->registration_bonus = $request->registration_bonus;
         $model->total_member_register_reword_amount = $request->total_member_register_reword_amount;
         $model->total_member_register_reword = $request->total_member_register_reword;

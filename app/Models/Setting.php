@@ -17,7 +17,10 @@ class Setting extends Model
         'active_gateway',
         'bitflow_client_id',
         'bitflow_client_secret',
-        'bitflow_public_key'
+        'bitflow_public_key',
+        'free_task_video_url',
+        'free_task_reward',
+        'free_task_seconds'
     ];
 
     protected $casts = [

@@ -24,7 +24,6 @@
             </button>
         </div>
 
-        @include('partials.checkin_button')
 
         <!-- Saldo e Pacotes -->
         <div class="mx-4 p-5 bg-gradient-to-r from-red-400 to-red-600 rounded-xl text-white shadow-lg mb-5">

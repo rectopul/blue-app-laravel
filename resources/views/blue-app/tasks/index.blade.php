@@ -34,6 +34,48 @@
         </div>
 
         <div class="px-5 mt-6 space-y-10">
+            {{-- Free Task --}}
+            @if(isset($freeTask))
+                <div class="scroll-mt-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h2 class="text-sm font-black text-pink-600 uppercase tracking-wider">Tarefa Grátis Diária</h2>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Disponível para todos</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">R$ {{ number_format($freeTask['reward'], 2, ',', '.') }}</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        @if(!$freeTask['completed'])
+                            <div class="group flex items-center gap-4 rounded-[30px] border-2 border-pink-200 bg-white p-5 shadow-lg transition-all hover:border-pink-300">
+                                <div class="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-pink-100 text-pink-600">
+                                    <span class="material-symbols-outlined text-2xl">star</span>
+                                </div>
+
+                                <div class="min-w-0 flex-1">
+                                    <h3 class="truncate text-sm font-bold text-slate-800">Assistir vídeo grátis</h3>
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Tempo: {{ $freeTask['seconds'] }}s</p>
+                                </div>
+
+                                <a href="{{ route('user.tasks.show', ['id' => 'free']) }}" class="inline-flex h-9 items-center justify-center rounded-full bg-pink-500 px-5 text-[10px] font-black uppercase tracking-widest text-white shadow-lg transition-all active:scale-95">
+                                    Iniciar
+                                </a>
+                            </div>
+                        @else
+                            <div class="rounded-[30px] border border-emerald-100 bg-emerald-50/30 p-6 text-center">
+                                <div class="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-emerald-500">
+                                    <span class="material-symbols-outlined !text-lg">check_circle</span>
+                                </div>
+                                <p class="text-xs font-bold text-emerald-600 uppercase tracking-widest">Tarefa grátis concluída hoje!</p>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+                <hr class="border-slate-100">
+            @endif
+
             @foreach($plansStats as $item)
                 <div id="plan-{{ $item['purchase']->id }}" class="scroll-mt-6">
                     <div class="flex items-center justify-between mb-4">

@@ -82,7 +82,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('purchase/confirmation/{id}', [PurchaseController::class, 'purchaseConfirmationWeb'])->name('purchase.confirmation');
 
     Route::get('rating-immediate', [UserController::class, 'rating_immediate'])->name('rating-immediate');
-    Route::post('/checkins', [CheckinController::class, 'store'])->name('checkins.store');
 
     //invite
     Route::get('/invite', [UserController::class, 'invite'])->name('user.invite');
