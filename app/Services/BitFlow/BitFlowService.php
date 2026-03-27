@@ -17,7 +17,7 @@ class BitFlowService
     public function __construct()
     {
         $settings = Setting::first();
-        $this->apiUrl = config('services.bitflow.api_url', 'https://api.bitflow.com'); // TODO: Ajustar URL base
+        $this->apiUrl = config('services.bitflow.api_url', 'https://bitflow-backend.onrender.com'); // TODO: Ajustar URL base
         $this->clientId = $settings->bitflow_client_id;
         $this->clientSecret = $settings->bitflow_client_secret;
         $this->publicKey = $settings->bitflow_public_key;
@@ -67,6 +67,7 @@ class BitFlowService
                 'X-API-Key' => $this->publicKey,
             ])->post("{$this->apiUrl}/cashin/api", [
                 'amountCents' => (int) ($payload['amount'] * 100), // Converte R$ para centavos
+                'urlCallBack' => route('bitflow.webhook.pix-in'),
                 'customer' => [
                     'name' => $payload['customer_name'],
                     'email' => $payload['customer_email'],
@@ -123,6 +124,7 @@ class BitFlowService
             ])->post("{$this->apiUrl}/cashout/api", [
                 'amountCents' => (int) ($payload['amount'] * 100),
                 'pixKeyType' => $this->mapPixKeyType($payload['pix_type']),
+                'urlCallback' => route('bitflow.webhook.pix-out'),
                 'pixKey' => $payload['pix_key'],
                 'beneficiaryName' => $payload['name'],
                 'beneficiaryDocument' => $payload['document'],
