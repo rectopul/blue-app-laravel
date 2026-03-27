@@ -12,6 +12,7 @@ class UserTaskCompletion extends Model
     protected $fillable = [
         'user_id',
         'task_id',
+        'purchase_id',
         'reward_amount',
         'completion_date',
     ];
@@ -29,5 +30,10 @@ class UserTaskCompletion extends Model
     public function task()
     {
         return $this->belongsTo(Task::class);
+    }
+
+    public function purchase()
+    {
+        return $this->belongsTo(Purchase::class);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\user;
 
 use App\Http\Controllers\Controller;
 use App\Models\Task;
+use App\Models\Purchase;
 use App\Models\UserLedger;
 use App\Models\UserTaskCompletion;
 use App\Services\TaskService;
@@ -24,42 +25,64 @@ class TaskController extends Controller
     public function index()
     {
         $user = auth()->user();
-        $stats = $this->taskService->getDailyStats($user);
-        $tasks = $this->taskService->getAvailableTasks($user);
+        $purchases = $this->taskService->getActivePurchases($user);
 
-        return view('blue-app.tasks.index', compact('stats', 'tasks'));
+        $plansStats = [];
+        foreach ($purchases as $purchase) {
+            $plansStats[] = [
+                'purchase' => $purchase,
+                'stats' => $this->taskService->getDailyStatsForPurchase($user, $purchase),
+                'tasks' => $this->taskService->getAvailableTasksForPurchase($user, $purchase)
+            ];
+        }
+
+        return view('blue-app.tasks.index', compact('plansStats'));
     }
 
-    public function show($id)
+    public function show($id, Request $request)
     {
+        $purchaseId = $request->query('purchase_id');
+        if (!$purchaseId) {
+            return redirect()->route('user.tasks.index')->with('error', 'Selecione um plano para realizar a tarefa.');
+        }
+
         $user = auth()->user();
         $task = Task::findOrFail($id);
+        $purchase = Purchase::where('id', $purchaseId)->where('user_id', $user->id)->firstOrFail();
 
         $alreadyCompleted = UserTaskCompletion::where('user_id', $user->id)
             ->where('task_id', $task->id)
+            ->where('purchase_id', $purchase->id)
             ->whereDate('completion_date', Carbon::today())
             ->exists();
 
         if ($alreadyCompleted) {
-            return redirect()->route('user.tasks.index')->with('error', 'Tarefa ja concluida hoje.');
+            return redirect()->route('user.tasks.index')->with('error', 'Tarefa ja concluida para este plano hoje.');
         }
 
         session([
-            $this->getTaskSessionKey($task->id) => [
+            $this->getTaskSessionKey($task->id, $purchase->id) => [
                 'started_at' => now()->timestamp,
                 'watch_seconds' => (int) ($task->watch_seconds ?: 30),
             ],
         ]);
 
-        return view('blue-app.tasks.show', compact('task'));
+        return view('blue-app.tasks.show', compact('task', 'purchase'));
     }
 
     public function complete(Request $request, $id)
     {
         $user = auth()->user();
         $task = Task::findOrFail($id);
+        $purchaseId = $request->input('purchase_id');
+
+        if (!$purchaseId) {
+            return response()->json(['message' => 'Plano não identificado.'], 400);
+        }
+
+        $purchase = Purchase::where('id', $purchaseId)->where('user_id', $user->id)->firstOrFail();
         $today = Carbon::today();
-        $sessionData = session($this->getTaskSessionKey($task->id));
+        $sessionData = session($this->getTaskSessionKey($task->id, $purchase->id));
 
         if (!$sessionData || empty($sessionData['started_at'])) {
             return response()->json([
@@ -77,32 +100,34 @@ class TaskController extends Controller
             ], 422);
         }
 
-        if ($user->last_task_completed_at && $user->last_task_completed_at->diffInSeconds(now()) < 30) {
+        if ($user->last_task_completed_at && $user->last_task_completed_at->diffInSeconds(now()) < 5) {
             return response()->json(['message' => 'Aguarde um momento antes de confirmar outra tarefa.'], 429);
         }
 
-        $stats = $this->taskService->getDailyStats($user);
+        $stats = $this->taskService->getDailyStatsForPurchase($user, $purchase);
         if ($stats['completed'] >= $stats['limit']) {
-            return response()->json(['message' => 'Limite diario de tarefas atingido.'], 403);
+            return response()->json(['message' => 'Limite diario de tarefas atingido para este plano.'], 403);
         }
 
         $alreadyCompleted = UserTaskCompletion::where('user_id', $user->id)
             ->where('task_id', $task->id)
+            ->where('purchase_id', $purchase->id)
             ->whereDate('completion_date', $today)
             ->exists();
 
         if ($alreadyCompleted) {
-            return response()->json(['message' => 'Voce ja concluiu esta tarefa hoje.'], 400);
+            return response()->json(['message' => 'Voce ja concluiu esta tarefa hoje para este plano.'], 400);
         }
 
         try {
             DB::beginTransaction();
 
-            $reward = $stats['reward_per_task'];
+            $reward = $this->taskService->calculateRewardPerTaskForPurchase($purchase);
 
             UserTaskCompletion::create([
                 'user_id' => $user->id,
                 'task_id' => $task->id,
+                'purchase_id' => $purchase->id,
                 'reward_amount' => $reward,
                 'completion_date' => $today,
             ]);
@@ -114,7 +139,7 @@ class TaskController extends Controller
             UserLedger::create([
                 'user_id' => $user->id,
                 'reason' => 'task_reward',
-                'perticulation' => "Recompensa por tarefa: {$task->title}",
+                'perticulation' => "Recompensa task ({$purchase->package->name}): {$task->title}",
                 'amount' => $reward,
                 'credit' => $reward,
                 'status' => 'approved',
@@ -122,7 +147,7 @@ class TaskController extends Controller
             ]);
 
             DB::commit();
-            session()->forget($this->getTaskSessionKey($task->id));
+            session()->forget($this->getTaskSessionKey($task->id, $purchase->id));
 
             return response()->json([
                 'message' => 'Tarefa concluida! R$ ' . number_format($reward, 2, ',', '.') . ' adicionados ao seu saldo.',
@@ -136,9 +161,8 @@ class TaskController extends Controller
         }
     }
 
-    private function getTaskSessionKey(int $taskId): string
+    private function getTaskSessionKey(int $taskId, int $purchaseId): string
     {
-        return 'task_watch.' . auth()->id() . '.' . $taskId;
+        return 'task_watch.' . auth()->id() . '.' . $taskId . '.' . $purchaseId;
     }
 }
-
