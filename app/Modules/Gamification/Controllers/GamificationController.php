@@ -78,14 +78,13 @@ class GamificationController extends Controller
 
             // Create ledger entry
             $user->ledgers()->create([
-                'reference_type' => 'gamification_bonus',
-                'credit' => $setting->bonus_reward,
-                'debit' => 0,
-                'date' => now(),
-                'status' => 'approved',
-                'reason' => "gamification_egg_bonus",
+                'reason' => 'gamification_bonus',
                 'perticulation' => "Bônus por ovo escondido ({$setting->page_name})",
                 'amount' => $setting->bonus_reward,
+                'credit' => $setting->bonus_reward,
+                'debit' => 0,
+                'status' => 'approved',
+                'date' => now()->format('d-m-Y H:i'),
             ]);
 
             DB::commit();

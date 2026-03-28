@@ -1057,17 +1057,25 @@ class UserController extends Controller
 
     public function setupGateway(Request $request)
     {
-        if ($request->name == '' || $request->gateway_method == '' || $request->gateway_number == '') {
-            return redirect()->back()->with('success', 'Please enter correct bank info');
+        $validator = Validator::make($request->all(), [
+            'pix_name' => 'required',
+            'pix_document' => 'required',
+            'pix_type' => 'required',
+            'pix_key' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', 'Por favor, preencha todos os campos corretamente.');
         }
 
-
         User::where('id', Auth::id())->update([
-            'name' => $request->name,
-            'gateway_method' => $request->gateway_method,
-            'gateway_number' => $request->gateway_number,
+            'pix_name' => $request->pix_name,
+            'pix_document' => $request->pix_document,
+            'pix_type' => $request->pix_type,
+            'pix_key' => $request->pix_key,
         ]);
-        return redirect()->back()->with('success', 'Bank info created.');
+
+        return redirect()->back()->with('success', 'Dados da carteira PIX atualizados com sucesso.');
     }
 
     public function invite()
