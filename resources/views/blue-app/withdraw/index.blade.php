@@ -184,7 +184,7 @@
                                     return '';
                                 }
                             }"
-                            :x-mask="mask"
+                            x-mask:dynamic="mask"
                             class="w-full rounded-[20px] border border-slate-100 bg-slate-50 py-3.5 px-5 text-sm font-bold text-slate-700 outline-none focus:border-pink-200 focus:bg-white">
                     </div>
 
