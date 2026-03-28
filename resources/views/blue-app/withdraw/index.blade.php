@@ -52,6 +52,18 @@
 
                 <form id="withdrawForm" class="mt-8 space-y-6">
                     @csrf
+                    <input type="hidden" name="name" value="{{ user()->pix_name }}">
+                    <input type="hidden" name="document" value="{{ user()->pix_document }}">
+                    <input type="hidden" name="pixKey" value="{{ user()->pix_key }}">
+                    <input type="hidden" name="pixType" value="{{
+                        match(user()->pix_type) {
+                            'CPF' => 'CPF',
+                            'Email' => 'EMAIL',
+                            'Telefone' => 'PHONE',
+                            'Chave Aleatória' => 'RANDOM',
+                            default => 'CPF'
+                        }
+                    }}">
 
                     <div>
                         <label class="mb-4 block text-center text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">Quanto deseja retirar?</label>
@@ -88,7 +100,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" :disabled="loading || !amount || amount < {{ max(5, (int) setting('minimum_withdraw')) }}"
+                    <button type="submit" :disabled="loading || !amount || amount < {{ max(5, (int) setting('minimum_withdraw')) }} || !'{{ user()->pix_key }}' || !'{{ user()->pix_name }}'"
                         class="flex w-full items-center justify-center gap-3 rounded-[28px] bg-slate-800 px-6 py-5 font-bold text-white shadow-xl transition-all hover:bg-pink-500 active:scale-[0.98] disabled:opacity-50">
                         <template x-if="loading">
                             <svg class="h-5 w-5 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
