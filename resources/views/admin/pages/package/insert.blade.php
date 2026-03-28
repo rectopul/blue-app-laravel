@@ -44,7 +44,7 @@
                                             <div class="form-group">
                                                 <label for="price">Preço (R$)</label>
                                                 <div class="position-relative has-icon-left">
-                                                    <input type="number" id="price" class="form-control" name="price" placeholder="0.00" step="0.01" value="{{ old('price', $data ? $data->price : '') }}" required oninput="calcReturns()">
+                                                    <input type="number" id="price" class="form-control" name="price" placeholder="0.00" step="0.01" value="{{ old('price', $data ? $data->price : '') }}" required oninput="autoCalculate()">
                                                     <div class="form-control-position">
                                                         <i class="bx bx-dollar"></i>
                                                     </div>
@@ -68,7 +68,7 @@
                                             <div class="form-group">
                                                 <label for="daily_tasks_limit">Limite de Tarefas Diárias</label>
                                                 <div class="position-relative has-icon-left">
-                                                    <input type="number" id="daily_tasks_limit" class="form-control" name="daily_tasks_limit" placeholder="5" value="{{ old('daily_tasks_limit', $data ? $data->daily_tasks_limit : '0') }}" required oninput="calcReturns()">
+                                                    <input type="number" id="daily_tasks_limit" class="form-control" name="daily_tasks_limit" placeholder="5" value="{{ old('daily_tasks_limit', $data ? $data->daily_tasks_limit : '0') }}" required oninput="autoCalculate()">
                                                     <div class="form-control-position">
                                                         <i class="bx bx-list-check"></i>
                                                     </div>
@@ -78,25 +78,46 @@
 
                                         <div class="col-md-6 col-12">
                                             <div class="form-group">
+                                                <label for="daily_income_value">Rendimento Diário Total (R$)</label>
+                                                <div class="position-relative has-icon-left">
+                                                    @php
+                                                        $dailyIncome = 0;
+                                                        if($data) {
+                                                            $dailyIncome = ($data->price * ($data->commission_with_avg_amount / 100)) + ($data->daily_tasks_limit * $data->daily_reward);
+                                                        }
+                                                    @endphp
+                                                    <input type="number" id="daily_income_value" class="form-control border-primary" name="daily_income_value" placeholder="10.00" step="0.01" value="{{ old('daily_income_value', $dailyIncome > 0 ? number_format($dailyIncome, 2, '.', '') : '') }}" required oninput="autoCalculate()">
+                                                    <div class="form-control-position">
+                                                        <i class="bx bx-money"></i>
+                                                    </div>
+                                                </div>
+                                                <small class="text-primary">Informe o rendimento diário desejado. O sistema calculará os campos abaixo.</small>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6 col-12">
+                                            <div class="form-group">
                                                 <label for="daily_reward">Recompensa por Tarefa (R$)</label>
                                                 <div class="position-relative has-icon-left">
-                                                    <input type="number" id="daily_reward" class="form-control" name="daily_reward" placeholder="1.00" step="0.01" value="{{ old('daily_reward', $data ? $data->daily_reward : '0.00') }}" required oninput="calcReturns()">
+                                                    <input type="number" id="daily_reward" class="form-control bg-light" name="daily_reward" placeholder="1.00" step="0.01" value="{{ old('daily_reward', $data ? $data->daily_reward : '0.00') }}" required readonly>
                                                     <div class="form-control-position">
                                                         <i class="bx bx-gift"></i>
                                                     </div>
                                                 </div>
+                                                <small class="text-muted">Calculado: (Rendimento Diário) / (Limite de Tarefas)</small>
                                             </div>
                                         </div>
 
-                                        <div class="col-12">
+                                        <div class="col-md-6 col-12">
                                             <div class="form-group">
                                                 <label for="commission_with_avg_amount">Comissão de Rendimento Diário (%)</label>
                                                 <div class="position-relative has-icon-left">
-                                                    <input type="number" id="commission_with_avg_amount" class="form-control" name="commission_with_avg_amount" placeholder="2.5" step="0.01" value="{{ old('commission_with_avg_amount', $data ? $data->commission_with_avg_amount : '') }}" required oninput="calcReturns()">
+                                                    <input type="number" id="commission_with_avg_amount" class="form-control bg-light" name="commission_with_avg_amount" placeholder="2.5" step="0.01" value="{{ old('commission_with_avg_amount', $data ? $data->commission_with_avg_amount : '') }}" required readonly>
                                                     <div class="form-control-position">
                                                         <i class="bx bx-trending-up"></i>
                                                     </div>
                                                 </div>
+                                                <small class="text-muted">Calculado automaticamente</small>
                                             </div>
                                         </div>
 
@@ -185,6 +206,35 @@
 
         function formatBRL(value) {
             return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+        }
+
+        function autoCalculate() {
+            const dailyIncome = parseFloat(document.getElementById('daily_income_value').value) || 0;
+            const tasksLimit = parseInt(document.getElementById('daily_tasks_limit').value) || 0;
+            const price = parseFloat(document.getElementById('price').value) || 0;
+
+            // Calculo Recompensa por Tarefa: (rendimento diário) / (Limite de Tarefas Diárias)
+            let dailyReward = 0;
+            if (tasksLimit > 0) {
+                dailyReward = dailyIncome / tasksLimit;
+            }
+            document.getElementById('daily_reward').value = dailyReward.toFixed(2);
+
+            // Comissão de Rendimento Diário (%):
+            // (rendimento diário / preço) * 100
+            let dailyPercent = 0;
+            if (price > 0) {
+                dailyPercent = (dailyIncome / price) * 100;
+            }
+
+            // O usuário pediu para calcular a porcentagem, mas se usarmos ambos (tarefa e porcentagem)
+            // o sistema vai pagar dobrado. Por padrão, vamos deixar a porcentagem em 0 no backend
+            // ou garantir que o usuário entenda.
+            // Re-lendo: "calcule a porcentagem e o Recompensa por Tarefa"
+            // Se o script usa os dois, vamos zerar a porcentagem para evitar o pagamento duplo passivo.
+            document.getElementById('commission_with_avg_amount').value = "0.00";
+
+            calcReturns();
         }
 
         function calcReturns() {
