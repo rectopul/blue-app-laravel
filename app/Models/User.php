@@ -275,7 +275,7 @@ class User extends Authenticatable
 
 
                 // Atualiza o total de comissão do referrer.
-                $referrer->total_commission += $commissionAmount;
+                // $referrer->total_commission += $commissionAmount;
                 $referrer->save();
 
                 // Registra a comissão no ledger do usuário para auditoria.
@@ -310,4 +310,3 @@ class User extends Authenticatable
         $this->save();
     }
 }
-

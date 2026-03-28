@@ -21,12 +21,11 @@ class GamificationService
     {
         // Check if user has at least one active purchase
         $hasActivePurchase = Purchase::where('user_id', $user->id)
-            ->where('status', 'active')
             ->exists();
 
-        if (!$hasActivePurchase) {
-            return collect();
-        }
+        // if (!$hasActivePurchase) {
+        //     return collect();
+        // }
 
         // Cache referral count for 10 minutes
         $referralCount = Cache::remember("user_{$user->id}_referral_count", 600, function () use ($user) {
