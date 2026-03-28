@@ -61,12 +61,12 @@ class ProfileController extends Controller
 
     public function change_password()
     {
-        return view('app.auth.change_password');
+        return view('blue-app.profile.change-password');
     }
 
     public function change_tpassword()
     {
-        return view('app.auth.change_tpassword');
+        return view('blue-app.profile.change-tpassword');
     }
 
     public function change_password_confirm(Request $request)

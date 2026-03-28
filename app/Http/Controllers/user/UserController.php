@@ -1068,11 +1068,18 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'Por favor, preencha todos os campos corretamente.');
         }
 
+        $pix_document = preg_replace('/[^0-9]/', '', $request->pix_document);
+        $pix_key = $request->pix_key;
+
+        if (in_array($request->pix_type, ['CPF', 'Telefone'])) {
+            $pix_key = preg_replace('/[^0-9]/', '', $request->pix_key);
+        }
+
         User::where('id', Auth::id())->update([
             'pix_name' => $request->pix_name,
-            'pix_document' => $request->pix_document,
+            'pix_document' => $pix_document,
             'pix_type' => $request->pix_type,
-            'pix_key' => $request->pix_key,
+            'pix_key' => $pix_key,
         ]);
 
         return redirect()->back()->with('success', 'Dados da carteira PIX atualizados com sucesso.');
@@ -1117,7 +1124,7 @@ class UserController extends Controller
 
     public function add_bank()
     {
-        return view('app.main.gateway_setup');
+        return view('blue-app.profile.pix');
     }
 
     public function add_bank_create()

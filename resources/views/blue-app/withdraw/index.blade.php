@@ -33,15 +33,20 @@
                 </div>
 
                 <div class="mt-6 rounded-[28px] border border-slate-100 bg-slate-50 p-5">
-                    <div class="flex items-start gap-3">
-                        <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-pink-50 text-pink-500">
-                            <span class="material-symbols-outlined">account_balance</span>
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="flex items-start gap-3">
+                            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-pink-50 text-pink-500">
+                                <span class="material-symbols-outlined">account_balance</span>
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Carteira PIX</p>
+                                <p class="mt-1 text-sm font-bold text-slate-700">{{ user()->pix_type ?: 'Nao configurado' }}</p>
+                                <p class="mt-1 break-all text-xs text-slate-500">{{ user()->pix_key ?: 'Cadastre sua chave PIX antes de solicitar o saque.' }}</p>
+                            </div>
                         </div>
-                        <div class="min-w-0 flex-1">
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Carteira PIX</p>
-                            <p class="mt-1 text-sm font-bold text-slate-700">{{ user()->pix_type ?: 'Nao configurado' }}</p>
-                            <p class="mt-1 break-all text-xs text-slate-500">{{ user()->pix_key ?: 'Cadastre sua chave PIX antes de solicitar o saque.' }}</p>
-                        </div>
+                        <button type="button" @click="showModal = true" class="grid h-10 w-10 place-items-center rounded-xl bg-white shadow-sm border border-pink-50 text-pink-500 active:scale-90 transition-all">
+                            <span class="material-symbols-outlined text-[20px]">edit</span>
+                        </button>
                     </div>
                 </div>
 
@@ -130,12 +135,82 @@
         </div>
     </div>
 
+    {{-- Modal de Edição PIX --}}
+    <template x-if="showModal">
+        <div class="fixed inset-0 z-[100] flex items-end justify-center px-4 pb-10 sm:items-center sm:p-0">
+            <div @click="showModal = false" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"></div>
+
+            <div class="relative w-full max-w-[400px] transform overflow-hidden rounded-[40px] bg-white p-8 shadow-2xl transition-all">
+                <div class="mb-6 flex items-center justify-between">
+                    <h3 class="text-xl font-black text-slate-800">Editar <span class="text-pink-500">PIX</span></h3>
+                    <button @click="showModal = false" class="grid h-10 w-10 place-items-center rounded-xl bg-slate-50 text-slate-400">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+
+                <form action="{{ route('setup.gateway.submit') }}" method="POST" class="space-y-4">
+                    @csrf
+                    <div class="space-y-1">
+                        <label class="ml-4 text-[9px] font-bold uppercase tracking-widest text-slate-400">Nome do Titular</label>
+                        <input type="text" name="pix_name" value="{{ auth()->user()->pix_name }}" required
+                            class="w-full rounded-[20px] border border-slate-100 bg-slate-50 py-3.5 px-5 text-sm font-bold text-slate-700 outline-none focus:border-pink-200 focus:bg-white">
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="ml-4 text-[9px] font-bold uppercase tracking-widest text-slate-400">CPF/CNPJ</label>
+                        <input type="text" name="pix_document" value="{{ auth()->user()->pix_document }}" required
+                            x-mask:dynamic="$input.length > 14 ? '99.999.999/9999-99' : '999.999.999-99'"
+                            class="w-full rounded-[20px] border border-slate-100 bg-slate-50 py-3.5 px-5 text-sm font-bold text-slate-700 outline-none focus:border-pink-200 focus:bg-white">
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="ml-4 text-[9px] font-bold uppercase tracking-widest text-slate-400">Tipo de Chave</label>
+                        <select name="pix_type" id="pix_type_modal" required x-model="pixType"
+                            class="w-full rounded-[20px] border border-slate-100 bg-slate-50 py-3.5 px-5 text-sm font-bold text-slate-700 outline-none focus:border-pink-200 focus:bg-white">
+                            <option value="CPF">CPF</option>
+                            <option value="Email">E-mail</option>
+                            <option value="Telefone">Telefone</option>
+                            <option value="Chave Aleatória">Chave Aleatória</option>
+                        </select>
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="ml-4 text-[9px] font-bold uppercase tracking-widest text-slate-400">Chave PIX</label>
+                        <input type="text" name="pix_key" value="{{ auth()->user()->pix_key }}" required
+                            x-data="{
+                                get mask() {
+                                    if (pixType === 'CPF') return '999.999.999-99';
+                                    if (pixType === 'Telefone') return '(99) 99999-9999';
+                                    return '';
+                                }
+                            }"
+                            :x-mask="mask"
+                            class="w-full rounded-[20px] border border-slate-100 bg-slate-50 py-3.5 px-5 text-sm font-bold text-slate-700 outline-none focus:border-pink-200 focus:bg-white">
+                    </div>
+
+                    <button type="submit" class="mt-4 w-full rounded-[24px] bg-slate-800 py-4 font-bold text-white shadow-lg active:scale-[0.98] transition-all">
+                        Salvar Alterações
+                    </button>
+                </form>
+            </div>
+        </div>
+    </template>
+
     @push('scripts')
     <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.store('withdraw', {
+                pixType: '{{ auth()->user()->pix_type ?: 'CPF' }}'
+            })
+        })
+
         function withdrawApp() {
             return {
                 amount: null,
                 loading: false,
+                showModal: false,
+                get pixType() { return Alpine.store('withdraw').pixType },
+                set pixType(val) { Alpine.store('withdraw').pixType = val },
                 feeAmount: '0,00',
                 finalAmount: '0,00',
                 feePercent: {{ (float) setting('withdraw_charge', 0) }},
