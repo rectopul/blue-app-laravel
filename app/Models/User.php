@@ -37,6 +37,8 @@ class User extends Authenticatable
         'withdraw_password',
         'pix_type',
         'pix_key',
+        'pix_name',
+        'pix_document',
         'last_task_completed_at'
     ];
 

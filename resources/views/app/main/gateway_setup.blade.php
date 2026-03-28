@@ -27,14 +27,14 @@
 <uni-app class="uni-app--maxwidth">
     <uni-page data-page="pages/my/card">
         <uni-page-head uni-page-head-type="default">
-            <div class="uni-page-head" style="background-color: rgb(13, 165, 97); color: rgb(255, 255, 255);">
+            <div class="uni-page-head" style="background-color: rgb(236, 72, 153); color: rgb(255, 255, 255);">
                 <div class="uni-page-head-hd">
-                    <div class="uni-page-head-btn" onclick="window.location.href='{{route('user.withdraw')}}'"><i class="uni-btn-icon"
+                    <div class="uni-page-head-btn" onclick="window.location.href='{{route('profile')}}'"><i class="uni-btn-icon"
                                                       style="color: rgb(255, 255, 255); font-size: 27px;"></i></div>
                     <div class="uni-page-head-ft"></div>
                 </div>
                 <div class="uni-page-head-bd">
-                    <div class="uni-page-head__title" style="font-size: 16px; opacity: 1;"> Modify Bank Account
+                    <div class="uni-page-head__title" style="font-size: 16px; opacity: 1;"> Configurar Carteira PIX
                     </div>
                 </div>
                 <div class="uni-page-head-ft"></div>
@@ -56,37 +56,52 @@
                     </uni-view>
                     <uni-view data-v-e547158c="" class="itembox">
                         <uni-view data-v-e547158c="" class="input_con">
-                            <uni-view data-v-e547158c="" class="input_lable">Real Name</uni-view>
+                            <uni-view data-v-e547158c="" class="input_lable">Nome do Titular</uni-view>
                             <uni-input data-v-e547158c="" class="input_box">
                                 <div class="uni-input-wrapper">
-                                    <input maxlength="40" step="" type="text"
-                                           placeholder="Enter your real name"
-                                           name="name"
+                                    <input maxlength="40" type="text"
+                                           placeholder="Nome completo"
+                                           name="pix_name"
+                                           value="{{ auth()->user()->pix_name }}"
+                                           class="uni-input-input"></div>
+                            </uni-input>
+                        </uni-view>
+
+                        <uni-view data-v-e547158c="" class="input_con">
+                            <uni-view data-v-e547158c="" class="input_lable">Documento (CPF/CNPJ)</uni-view>
+                            <uni-input data-v-e547158c="" class="input_box">
+                                <div class="uni-input-wrapper">
+                                    <input maxlength="20" type="text"
+                                           placeholder="000.000.000-00"
+                                           name="pix_document"
+                                           value="{{ auth()->user()->pix_document }}"
                                            class="uni-input-input"></div>
                             </uni-input>
                         </uni-view>
 
                         <uni-view data-v-e547158c="" class="input_con" style="position: relative;">
-                            <uni-view data-v-e547158c="" class="input_lable">Bank code</uni-view>
+                            <uni-view data-v-e547158c="" class="input_lable">Tipo de Chave</uni-view>
                             <uni-input data-v-e547158c="" class="input_box">
                                 <div class="uni-input-wrapper">
-                                    <select name="gateway_method" id="gateway_method">
-                                        <option value="">Enter Bank code</option>
-                                        @foreach(\App\Models\PaymentMethod::get() as $element)
-                                        <option value="{{$element->name}}">{{$element->name}}</option>
-                                        @endforeach
+                                    <select name="pix_type" id="pix_type">
+                                        <option value="">Selecione o tipo</option>
+                                        <option value="CPF" @if(auth()->user()->pix_type == 'CPF') selected @endif>CPF</option>
+                                        <option value="Email" @if(auth()->user()->pix_type == 'Email') selected @endif>E-mail</option>
+                                        <option value="Telefone" @if(auth()->user()->pix_type == 'Telefone') selected @endif>Telefone</option>
+                                        <option value="Chave Aleatória" @if(auth()->user()->pix_type == 'Chave Aleatória') selected @endif>Chave Aleatória</option>
                                     </select>
                                 </div>
                             </uni-input>
                         </uni-view>
+
                         <uni-view data-v-e547158c="" class="input_con">
-                            <uni-view data-v-e547158c="" class="input_lable">Bank Account</uni-view>
+                            <uni-view data-v-e547158c="" class="input_lable">Chave PIX</uni-view>
                             <uni-input data-v-e547158c="" class="input_box">
                                 <div class="uni-input-wrapper">
-                                    <div class="uni-input-placeholder input-placeholder" data-v-e547158c="">
-                                    </div>
-                                    <input placeholder="Enter Bank Account number"
-                                           name="gateway_number" type="text" class="uni-input-input">
+                                    <input placeholder="Sua chave aqui"
+                                           name="pix_key" type="text"
+                                           value="{{ auth()->user()->pix_key }}"
+                                           class="uni-input-input">
                                 </div>
                             </uni-input>
                         </uni-view>

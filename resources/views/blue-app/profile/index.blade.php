@@ -50,11 +50,11 @@
                     <span class="text-[11px] font-black text-slate-700 uppercase tracking-widest">Transações</span>
                 </a>
 
-                <a href="{{ route('setting') }}" class="bg-white p-6 rounded-[35px] shadow-xl shadow-black/5 border border-amber-50 flex flex-col items-center text-center group active:scale-95 transition-all">
+                <a href="{{ route('user.change.password') }}" class="bg-white p-6 rounded-[35px] shadow-xl shadow-black/5 border border-amber-50 flex flex-col items-center text-center group active:scale-95 transition-all">
                     <div class="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                        <span class="text-2xl">⚙️</span>
+                        <span class="text-2xl">🔑</span>
                     </div>
-                    <span class="text-[11px] font-black text-slate-700 uppercase tracking-widest">Configurações</span>
+                    <span class="text-[11px] font-black text-slate-700 uppercase tracking-widest">Alterar Senha</span>
                 </a>
             </div>
 
